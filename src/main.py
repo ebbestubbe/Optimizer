@@ -24,6 +24,7 @@ def main():
     #start_point = np.zeros(optfunc.n_dim)+3
     start_point = np.array([-1,1])
     #Making some changes
+    #Making more changes!
     
     #target = io.imread('Tricasso\MonaLisa.png')
     #optfunc = tricasso_func(target)
