@@ -1,0 +1,7 @@
+simplex initialization: make sure that the points are moved towards the middle, so a starting point at the edge doesnt make redundant points
+
+CLIPPING:
+	clipping points to remain within boundaries: transfer to an obligation in the optimization function?
+	abscraction of points - values?
+
+how to handle functions only defined at integers? 
