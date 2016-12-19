@@ -22,10 +22,8 @@ def main():
     
     optfunc = Functions.test_functions.rosenbrock()  
     #start_point = np.zeros(optfunc.n_dim)+3
-    start_point = np.array([-1,1])
-    #Making some changes
-    #Making more changes!
-    
+    #start_point = np.array([-1,1])
+    start_point = [-1,1]
     #target = io.imread('Tricasso\MonaLisa.png')
     #optfunc = tricasso_func(target)
     #start_point = np.array([50, 200, 200, 50,50,200,100,200,100])

@@ -18,11 +18,11 @@ class simplex(object):
         self.points = np.zeros([func.n_dim+1,func.n_dim])
         self.points[0,:] = point_start
                         
-
         #set tolerances        
         self.abs_tol = abs_tol
         self.rel_tol = rel_tol
         self.max_iter = max_iter
+        
         #set simplex parameter values        
         self.alpha = 1        
         self.gamma = 2
@@ -84,16 +84,15 @@ class simplex(object):
                 p1 = self.points[0,:] * (self.sigma-1) #precalc
                 for i in range(1,self.points.shape[0]):
                      self.points[i,:] = np.clip(p1 + self.sigma*self.points[i,:],self.func.bounds[0],self.func.bounds[1])
-    
-    def sortsimplex(self):
-        
+    '''
+    def sortsimplex(self):   
         values = np.array([self.func.evaluate(self.points[i]) for i in range(len(self.points))])
         #sort points and values such that the lowest values come first.    
         a = values.argsort()        
         values = values[a]
         self.points = self.points[a]
         return values
-    
+    '''
     def solve(self):
         [i.notify_solve() for i in self.observers]
         bestpoint = np.zeros([self.max_iter+1,self.func.n_dim])
