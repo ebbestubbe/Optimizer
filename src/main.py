@@ -17,9 +17,9 @@ from tricasso_func import tricasso_func
 from tricasso_func import trial_init
 from Tricasso.tricasso import add_triangle
 
-
 def main():
-    plt.close("all")  
+    plt.close("all")
+    resultfolder = 'Results\'
     '''
     optfunc = Functions.test_functions.rosenbrock()  
     start_point = np.zeros(optfunc.n_dim)+3
@@ -30,9 +30,9 @@ def main():
     start_point = np.array([50, 200, 200, 50,50,200,100,200,100])
     before_opt = trial_init(target)
     add_triangle(before_opt,vec = start_point)
-    io.imsave('before.png',before_opt)
+    io.imsave(resultfolder + 'before.png',before_opt)
     
-	solver = simplex(optfunc,start_point,rel_tol = 0.0000001, abs_tol = 0.0001, max_iter = 300)
+    solver = simplex(optfunc,start_point,rel_tol = 0.0000001, abs_tol = 0.0001, max_iter = 300)
     
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
@@ -62,6 +62,10 @@ def main():
     plt.hist(steptimes)
     plt.show()
     
+    plt.figure(4)
+    plt.plot(np.diff([results[i][1][0] for i in range(len(results))]))
+    plt.show()
+    
     print("val:")
     print(val)
     print("var:")
@@ -73,7 +77,7 @@ def main():
     product = trial_init(target)
     
     add_triangle(product,vec = var)
-    io.imsave('Product.png',product)
+    io.imsave(resultfolder + 'Product.png',product)
     '''
     
 if __name__ == '__main__':
