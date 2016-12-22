@@ -13,6 +13,8 @@ from skimage import draw
 
 from Tricasso.tricasso import trial_init
 from Tricasso.tricasso import add_triangle
+from Tricasso.tricasso import add_triangles
+
 from Tricasso.tricasso import calc_cost
 import os
 
@@ -21,24 +23,31 @@ from function import function_interface
 
 class tricasso_func(function_interface):
     
-    def __init__(self,image):
-        self.n_dim = 9
+    def __init__(self,image,n_triangles):
+        self.n_dim = n_triangles*9
         self.target = image
         self.trial = trial_init(self.target)
-        upper_r = [self.target.shape[0]]*3
-        upper_c = [self.target.shape[1]]*3
-        upper_color = [255]*3
-        upper_r.extend(upper_c)
-        upper_r.extend(upper_color)        
-        self.bounds = [[0]*9, upper_r]
+        upper = []
+        lower = []
+        #Assume each triangle has the same boundaries        
+        for i in range(n_triangles):
+            upper.extend([self.target.shape[0]]*3)
+            upper.extend([self.target.shape[1]]*3)
+            upper.extend([255]*3)
+            lower.extend([0]*9)
+        self.bounds = [lower, upper]
        
     def evaluate(self,var):
         function_interface.evaluate(self,var)
-        #assume 1 triangle:
-        r = var[0:3]
-        c = var[3:6]
-        color = var[6:9]
         trial_copy = np.copy(self.trial)
-        add_triangle(trial_copy,r,c,color)
+        add_triangles(trial_copy,var)
+        '''
+        for i in range(len(var)//9):    
+            ind = i*9
+            r = var[ind + 0:ind + 3]
+            c = var[ind + 3:ind + 6]
+            color = var[ind + 6:ind + 9]
+            add_triangle(trial_copy,r,c,color)
+        '''
         cost = calc_cost(self.target,trial_copy)
         return cost
