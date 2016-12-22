@@ -32,7 +32,7 @@ class simplex(object):
         self.observers = []
         for i in range(func.n_dim):
             point_new = np.zeros(func.n_dim)
-            point_new[i] = 0.05
+            point_new[i] = 2#0.05
             cand_point = point_start + point_new
             self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])        
     

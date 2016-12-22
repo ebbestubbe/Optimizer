@@ -21,6 +21,14 @@ def add_triangle(img,r=None,c=None,color=None,vec = None):
     rr,cc = draw.polygon(r,c)
     img[rr,cc] = color
 
+def add_triangles(img,vec):
+    for i in range(len(vec)//9):
+        ind = i*9
+        r = vec[ind+0:ind+3]
+        c = vec[ind+3:ind+6]
+        color = vec[ind+6:ind+9]
+        rr,cc = draw.polygon(r,c)
+        img[rr,cc] = color
 #initializ a white rgb image with the same dimensions  
 def trial_init(img_target):
     trial = np.zeros(img_target.shape,dtype=np.uint8)-1
