@@ -12,12 +12,13 @@ class simplex(object):
     self.points: (n_dim+1) points acting as corners in the simplex
     '''
     
-    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000):
+    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005):
         #set func and points as internal values
         self.func = func
         self.points = np.zeros([func.n_dim+1,func.n_dim])
         self.points[0,:] = point_start
-                
+        self.start_size = start_size        
+
         #set tolerances        
         self.abs_tol = abs_tol
         self.rel_tol = rel_tol
@@ -32,7 +33,7 @@ class simplex(object):
         self.observers = []
         for i in range(func.n_dim):
             point_new = np.zeros(func.n_dim)
-            point_new[i] = 2#0.05
+            point_new[i] = self.start_size
             cand_point = point_start + point_new
             self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])        
     
