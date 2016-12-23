@@ -86,5 +86,4 @@ class observer_timeit():
     def get_steptimes(self):
         return self.steptimes
     def get_solvetime(self):
-        print("getting solvetime")
         return self.solvetime

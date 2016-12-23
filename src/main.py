@@ -41,11 +41,13 @@ def main():
     io.imsave(resultfolder + 'before.png',before_opt)
     rel_tol = 0#0.00001
     abs_tol = 0#0.1
-    solver = simplex(optfunc,start_point,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = 1000)
+    max_iter = 1000
+    start_size = 2
+    solver = simplex(optfunc,start_point,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
     
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
-    
+        
     solver.attach(observer_step_log)
     solver.attach(observer_time)
     
