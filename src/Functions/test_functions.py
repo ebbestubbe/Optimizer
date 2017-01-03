@@ -16,7 +16,7 @@ class sphere(function_interface):
     def evaluate(self,var):
         function_interface.evaluate(self,var)
         return np.sum(var**2)
-    
+        
     def report(self):
         return "Sphere minima: \nf(0,0) = 0"
         
@@ -91,8 +91,8 @@ class eggholder(function_interface):
     
     def evaluate(self,var):
         function_interface.evaluate(self,var)
-        term0 = -(var[1] + 47)*np.sin(np.sqrt(abs(var[0]/2 + (var[1] + 47))))
-        term1 = -var[0]*np.sin(np.sqrt(abs(var[0] - var[1]+47)))
+        term0 = -(var[1] + 47)*np.sin(np.sqrt(abs(var[0]/2 + var[1] + 47)))
+        term1 = -var[0]*np.sin(np.sqrt(abs(var[0] - var[1] - 47)))
         return term0 + term1
     
     def report(self):

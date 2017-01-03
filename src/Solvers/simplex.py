@@ -77,7 +77,9 @@ class simplex(object):
             #6:shrink
             else:
                 [i.notify_shrinking() for i in self.observers]
-                p1 = self.points[0,:] * (self.sigma-1) #precalc
+                #p1 = self.points[0,:] * (self.sigma-1) #precalc
+                p1 = self.points[0,:] * (1-self.sigma) #precalc
+                
                 for i in range(1,self.points.shape[0]):
                      self.points[i,:] = np.clip(p1 + self.sigma*self.points[i,:],self.func.bounds[0],self.func.bounds[1])
                 self.sortsimplex()
@@ -119,15 +121,17 @@ class simplex(object):
             to_checkwith = it - self.func.n_dim*4 #when checking convergence
             
             if(to_checkwith > 0):
-                abs_break = (bestvals[to_checkwith] - bestvals[-1] <  self.abs_tol)
-                rel_break = ((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1] <  self.rel_tol)
+                abs_diff = bestvals[to_checkwith] - bestvals[-1]
+                rel_diff = abs((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1])              
+                abs_break = (abs_diff < self.abs_tol)
+                rel_break = (rel_diff < self.rel_tol)
                 
                 if(abs_break or rel_break):
                     print("breaking: ")
                     print("current val: " + str(bestvals[-1]))
                     print("prev val:    " + str(bestvals[to_checkwith]))
-                    print("abs diff:    " + str(bestvals[to_checkwith] - bestvals[-1]))
-                    print("rel diff:    " + str((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1]))
+                    print("abs diff:    " + str(abs_diff))
+                    print("rel diff:    " + str(rel_diff))
                     break
             it+=1
         
