@@ -26,19 +26,19 @@ def main():
     start_point = np.zeros(optfunc.n_dim)+3
     start_point = np.array([-1,1])
     '''
-    target = io.imread('Tricasso\MonaLisa.png')
+    #target = io.imread('Tricasso\MonaLisa.png')
     target = io.imread('Tricasso\shapes.png')
 
-    optfunc = tricasso_func(target,n_triangles = 1)
+    optfunc = tricasso_func(target,n_triangles = 2)
     
-    start_point = np.array([ 100,250,250,100,100,200,200, 50, 50])
-                             #100,100,150,200,250,250,150,150,150])
+    start_point = np.array([ 100,250,250,100,100,200,200, 50, 50,#])
+                             100,100,150,200,250,250,150,150,150])
                             # 50, 78,120,157,131,178, 50, 50,250])#,
                             #300,350,350,350,350,300,250, 50, 50])
     
     before_opt = trial_init(target)
     add_triangles(before_opt,vec = start_point)
-    io.imsave(resultfolder + 'before.png',before_opt)
+    io.imsave(resultfolder + 'before2.png',before_opt)
     rel_tol = 0#0.00001
     abs_tol = 0#0.1
     max_iter = 1000
@@ -64,16 +64,12 @@ def main():
     for j in range(len(results[0][1])):
         plt.plot([results[i][1][j] for i in range(len(results))])
     plt.show()
-    
+        
     plt.figure(2)
-    plt.plot([results[i][1][0] for i in range(len(results))])
-    plt.show()
-    
-    plt.figure(3)
     plt.plot(steptimes)
     plt.show()
     
-    plt.figure(4)
+    plt.figure(3)
     plt.hist(steptimes)
     plt.show()
     
@@ -87,8 +83,8 @@ def main():
     
     product = trial_init(target)
     
-    add_triangles(product,vec = var)
-    io.imsave(resultfolder + 'Product.png',product)
+    add_triangles(product,vec = var)    
+    io.imsave(resultfolder + 'Product2.png',product)
     
     
 if __name__ == '__main__':
