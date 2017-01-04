@@ -19,6 +19,11 @@ from Tricasso.tricasso import add_triangle
 from Tricasso.tricasso import add_triangles
 
 def main():
+    tricasso_simplex()
+
+def tricasso_linesearch():
+
+def tricasso_simplex():
     plt.close("all")
     resultfolder = 'Results\\'
     '''
@@ -85,7 +90,6 @@ def main():
     
     add_triangles(product,vec = var)    
     io.imsave(resultfolder + 'Product2.png',product)
-    
     
 if __name__ == '__main__':
     main()

@@ -5,3 +5,19 @@ CLIPPING:
 	abscraction of points - values?
 
 how to handle functions only defined at integers? 
+
+OBSERVERS:
+	Common interface/superclass, such that all observers can 'pass' easily
+	
+FUNCTIONS:
+	Common interface/superclass
+	contour plotting
+	
+OPTIMIZERS:
+	Common interface/superclass
+		observers append/notify
+	normalize points/values vs point/value naming, maybe to val/var?
+	
+	
+
+
