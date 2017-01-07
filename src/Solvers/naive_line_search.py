@@ -56,7 +56,8 @@ class naive_line_search(object):
         for i in range(self.max_iter):
             oldval = self.values
             self.step()
-            if(oldval == self.values):
-                self.alpha *= 0.5
+            #if(oldval == self.values):
+            #    self.alpha *= 0.5
+            
         [i.notify_solve_end() for i in self.observers]
         return([self.values, self.points])

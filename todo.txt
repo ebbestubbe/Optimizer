@@ -8,6 +8,7 @@ how to handle functions only defined at integers?
 
 OBSERVERS:
 	Common interface/superclass, such that all observers can 'pass' easily
+	Print progress along the way
 	
 FUNCTIONS:
 	Common interface/superclass
@@ -17,7 +18,16 @@ OPTIMIZERS:
 	Common interface/superclass
 		observers append/notify
 	normalize points/values vs point/value naming, maybe to val/var?
+	initialize starting vars randomly
+	adding individual points to starting vars
 	
-	
+RESULTS:
+	Common way to show the results, with comparison between functions and optimizers
+	Make gifs of the in-between results
+	Make a 'result shower' agent, drawing the pictures etc.
+	Image of the magnitude of the error
 
 
+way down the line:
+	parallelization
+	use gfxcard
