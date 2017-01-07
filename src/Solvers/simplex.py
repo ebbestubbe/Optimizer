@@ -3,8 +3,6 @@ Created on 06/11/2016
 
 @author: Ebbe
 '''
-import matplotlib.pyplot as plt
-
 import numpy as np
 
 class simplex(object):
