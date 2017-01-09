@@ -95,7 +95,7 @@ def report(optfunc,solver):
     for i in range(len(results)):
         plt.plot(results[i][0][0][0],results[i][0][0][1],'b.')
     
-    optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100)
+    optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
     plt.show()
     
     plt.figure(3)
