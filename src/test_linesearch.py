@@ -14,7 +14,7 @@ import Functions.test_functions
 
 def main():
     plt.close("all")
-    #test_sphere()
+    test_sphere()
     test_rosenbrock()
     return
     test_himmelblau()
@@ -63,7 +63,7 @@ def test_func(optfunc,startpoint):
     #startpoint = np.arr-ay([-1,1])
     rel_tol = 0.0001
     abs_tol = 0.0001
-    max_iter = 2000
+    max_iter = 200
     start_size = 0.05
     solver = naive_line_search(optfunc,startpoint,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
     report(optfunc,solver)
