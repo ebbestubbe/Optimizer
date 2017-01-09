@@ -95,6 +95,7 @@ def report(optfunc,solver):
     for i in range(len(results)):
         plt.plot(results[i][0][0][0],results[i][0][0][1],'b.')
     
+    optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
     plt.show()
     
     plt.figure(3)
@@ -104,6 +105,8 @@ def report(optfunc,solver):
     plt.subplot(2,1,2)
     plt.hist(steptimes)
     plt.show()
+    
+       
     
     print("val:")
     print(val)
