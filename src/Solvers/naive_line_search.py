@@ -5,29 +5,27 @@ Created on Tue Jan  3 17:35:38 2017
 @author: Ebbe
 """
 import numpy as np
-
-class naive_line_search(object):
+from solver import solver_interface
+#In each iteration:
+#Check the points +/- alpha in each direction, tentatively move to that point, and check other directions
+#The 'normal' method is to move along one line first as much as possible, then move on to the next dimension
+#But its more fun to spend time developing the more advanced algorithms, come back to this later
+class naive_line_search(solver_interface):
     
-    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005):
-        self.func = func
+    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005,alpha_reduc_factor = 0.8):
+        super().__init__(func)
         
         self.abs_tol = abs_tol
         self.rel_tol = rel_tol
         self.max_iter = max_iter
         
-        #the size of the stepping algorithm
+        #the size of the stepping algorithm, and the reduction param
         self.alpha = start_size
+        self.alpha_reduc_factor = alpha_reduc_factor
         
-        self.observers = []
-
         self.points = point_start
-        self.values = self.func.evaluate(self.points)        
-        
-    def attach(self,observer):
-        self.observers.append(observer)
-    
-    def step(self):
-        [i.notify_step_start() for i in self.observers]
+            
+    def step_alg(self):
         for i in range(self.func.n_dim):
             
             point_mod = np.zeros(self.func.n_dim)
@@ -49,15 +47,32 @@ class naive_line_search(object):
                 self.points = point_neg
                 self.values = value_neg
                 continue
-        [i.notify_step_end() for i in self.observers]
-    def solve(self):
-        [i.notify_solve_start() for i in self.observers]
         
-        for i in range(self.max_iter):
+    def solve_alg(self):        
+        it = 0
+        self.values = self.func.evaluate(self.points)        
+        bestvals = [self.values]
+        
+        while(it < self.max_iter):    
             oldval = self.values
             self.step()
-            #if(oldval == self.values):
-            #    self.alpha *= 0.5
             
-        [i.notify_solve_end() for i in self.observers]
+            bestvals.append(self.values)
+            to_checkwith = it - self.func.n_dim*4 #when checking convergence
+            if(to_checkwith > 0):
+                abs_diff = bestvals[to_checkwith] - bestvals[-1]
+                rel_diff = abs((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1])              
+                abs_break = (abs_diff < self.abs_tol)
+                rel_break = (rel_diff < self.rel_tol)
+                
+                if(abs_break or rel_break):
+                    print("breaking: ")
+                    print("current val: " + str(bestvals[-1]))
+                    print("prev val:    " + str(bestvals[to_checkwith]))
+                    print("abs diff:    " + str(abs_diff))
+                    print("rel diff:    " + str(rel_diff))
+                    break
+            if(oldval == self.values):
+                self.alpha *= self.alpha_reduc_factor   
+            it+=1
         return([self.values, self.points])

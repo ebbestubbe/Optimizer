@@ -65,7 +65,8 @@ def test_func(optfunc,startpoint):
     abs_tol = 0.0001
     max_iter = 200
     start_size = 0.05
-    solver = naive_line_search(optfunc,startpoint,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
+    alpha_reduc_factor = 0.8
+    solver = naive_line_search(optfunc,startpoint,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size,alpha_reduc_factor = alpha_reduc_factor)
     report(optfunc,solver)
 
 def report(optfunc,solver):
