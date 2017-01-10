@@ -16,6 +16,7 @@ def main():
     plt.close("all")
     test_sphere()
     test_rosenbrock()
+    return
     test_himmelblau()
     test_rastrigin()
     test_bukin6()
@@ -60,8 +61,8 @@ def test_cross_in_tray():
 def test_func(optfunc,startpoint):
     #optfunc =  Functions.test_functions.rosenbrock()
     #startpoint = np.arr-ay([-1,1])
-    rel_tol = 0
-    abs_tol = 0
+    rel_tol = 0.0001
+    abs_tol = 0.0001
     max_iter = 200
     start_size = 0.005
     solver = simplex(optfunc,startpoint,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)

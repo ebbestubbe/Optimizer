@@ -4,11 +4,7 @@ Created on 24/10/2016
 @author: Ebbe
 '''
 import numpy as np
-
 class Random_Solver():
-    '''
-    classdocs
-    '''
     def __init__(self, func, n_runs):
         self.func = func
         self.n_runs = n_runs
