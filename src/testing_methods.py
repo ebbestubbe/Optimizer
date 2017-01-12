@@ -13,50 +13,57 @@ import Functions.test_functions
 
 #Use this to run on all test functions, and report everything necessary
 def fullreport(solver): 
-    test_sphere(solver)
-    test_rosenbrock(solver)
-    test_himmelblau(solver)
-    test_rastrigin(solver)
-    test_bukin6(solver)
-    test_eggholder(solver)
-    test_cross_in_tray(solver)
+    optfuncs = []
     
-def test_sphere(solver):
+    optfuncs.append(test_sphere())
+    
+    optfuncs.append(test_rosenbrock())
+    optfuncs.append(test_himmelblau())
+    optfuncs.append(test_rastrigin())
+    optfuncs.append(test_bukin6())
+    optfuncs.append(test_eggholder())
+    optfuncs.append(test_cross_in_tray())
+    
+    for i in range(len(optfuncs)):
+        report(optfuncs[i][0],optfuncs[i][1],solver)
+    return
+
+def test_sphere():
     optfunc = Functions.test_functions.sphere(2)
     startpoint = np.array([2,8])
-    report(optfunc,solver,startpoint)
+    return [optfunc,startpoint]
     
-def test_rosenbrock(solver):
+def test_rosenbrock():
     optfunc = Functions.test_functions.rosenbrock()
     startpoint = np.array([-1,1])
-    report(optfunc,solver,startpoint)
+    return [optfunc,startpoint]
     
-def test_himmelblau(solver):
+def test_himmelblau():
     optfunc = Functions.test_functions.himmelblau()
     startpoint = np.array([-1,1])
-    report(optfunc,solver,startpoint)
+    return [optfunc,startpoint]
     
-def test_rastrigin(solver):
+def test_rastrigin():
     optfunc = Functions.test_functions.rastrigin(2)
     startpoint = np.array([0.4,-0.3])   
-    report(optfunc,solver,startpoint)
-
-def test_bukin6(solver):
+    return [optfunc,startpoint]
+    
+def test_bukin6():
     optfunc = Functions.test_functions.bukin6()
     startpoint = np.array([-12,2])   
-    report(optfunc,solver,startpoint)
+    return [optfunc,startpoint]
     
-def test_eggholder(solver):
+def test_eggholder():
     optfunc = Functions.test_functions.eggholder()
     startpoint = np.array([511,400])   
-    report(optfunc,solver,startpoint)
-
-def test_cross_in_tray(solver):
+    return [optfunc,startpoint]
+    
+def test_cross_in_tray():
     optfunc = Functions.test_functions.cross_in_tray()
     startpoint = np.array([1.2,1.2])   
-    report(optfunc,solver,startpoint)
+    return [optfunc,startpoint]
     
-def report(optfunc,solver,startpoint):
+def report(optfunc,startpoint,solver):
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
     #observer_log = Solvers.observers.observer_simplex_print_log()
@@ -112,7 +119,7 @@ def report(optfunc,solver,startpoint):
     optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
     
     plt.show()
-    
+    '''    
     plt.figure(4)
     plt.subplot(2,1,1)
     plt.plot(steptimes)
@@ -120,11 +127,10 @@ def report(optfunc,solver,startpoint):
     plt.subplot(2,1,2)
     plt.hist(steptimes)
     plt.show()
-    
-       
-    
-    print("val:")
-    print(val)
+    ''' 
+    print("val found :" + str(val))
+    print("optimum   :" + str(optfunc.min_vals[0]))
+    print("difference:" + str(abs(val-optfunc.min_vals[0])))
     print("var:")
     print(var)
     print("solvetime: " + str(solvetime))

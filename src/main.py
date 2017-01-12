@@ -33,7 +33,7 @@ def tricasso_linesearch():
     #target = io.imread('Tricasso\shapes.png')
     #target = io.imread('Tricasso\fruit.png')
     
-    optfunc = tricasso_func(target,n_triangles = 2)
+    optfunc = tricasso_func(target,n_triangles = 1)
     '''
     start_point = np.array([ 100,250,250,100,100,200,200, 50, 50,#])
                              100,100,150,200,250,250,150,150,150,#])
@@ -49,11 +49,11 @@ def tricasso_linesearch():
     before_opt = trial_init(target)
     add_triangles(before_opt,vec = start_point)
     io.imsave(resultfolder + 'linesearch_before_rand.png',before_opt)
-    rel_tol = 0#0.00001
-    abs_tol = 0#0.1
-    max_iter = 200
+    rel_tol = 10e-10
+    abs_tol = 10e5
+    max_iter = 100
     start_size = 1
-    solver = naive_line_search(optfunc,start_point,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
+    solver = naive_line_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
     
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
@@ -61,7 +61,7 @@ def tricasso_linesearch():
     solver.attach(observer_step_log)
     solver.attach(observer_time)
     
-    val,var = solver.solve()
+    val,var = solver.solve(optfunc,start_point)
     
     solvetime = observer_time.get_solvetime()
     steptimes = observer_time.get_steptimes()
@@ -91,6 +91,7 @@ def tricasso_linesearch():
     
     add_triangles(product,vec = var)    
     io.imsave(resultfolder + 'linesearch_Product_rand.png',product)
+
 def tricasso_simplex():
     plt.close("all")
     resultfolder = 'Results\\'
