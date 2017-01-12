@@ -14,9 +14,9 @@ import Functions.test_functions
 
 def main():
     plt.close("all")
+    
     test_sphere()
     test_rosenbrock()
-    return
     test_himmelblau()
     test_rastrigin()
     test_bukin6()
@@ -61,17 +61,17 @@ def test_cross_in_tray():
 def test_func(optfunc,startpoint):
     #optfunc =  Functions.test_functions.rosenbrock()
     #startpoint = np.arr-ay([-1,1])
-    rel_tol = 0.0001
-    abs_tol = 0.0001
-    max_iter = 200
-    start_size = 0.05
+    rel_tol = 10e-10
+    abs_tol = 10e-10
+    max_iter = 1000
+    start_size = 0.1
     alpha_reduc_factor = 0.8
     solver = naive_line_search(optfunc,startpoint,rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size,alpha_reduc_factor = alpha_reduc_factor)
     report(optfunc,solver)
 
 def report(optfunc,solver):
-    print("Testing function:")
-    print(optfunc.report())
+    #print("Testing function:")
+    #print(optfunc.report())
     
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()

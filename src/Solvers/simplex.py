@@ -7,13 +7,10 @@ import numpy as np
 from solver import solver_interface 
 class simplex(solver_interface):
     
-    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005):
+    def __init__(self, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005):
         #Set func as internal variable via super constructor, maybe put more stuff into super constructor later?
-        super().__init__(func)
-        
-        
-        self.points = np.zeros([func.n_dim+1,func.n_dim])
-        self.points[0,:] = point_start
+        super().__init__()
+        self.id = "NELDER_MEAD_SIMPLEX"
         self.start_size = start_size        
 
         #set tolerances and max number of iterations        
@@ -27,13 +24,7 @@ class simplex(solver_interface):
         self.rho = 0.5
         self.sigma = 0.5
         
-        #Make all the points in the simplex(n_dim + 1)
-        for i in range(func.n_dim):
-            point_new = np.zeros(func.n_dim)
-            point_new[i] = self.start_size
-            cand_point = point_start + point_new
-            self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])        
-    
+        
     #Stepping algorithm, as per wikipedia
     def step_alg(self):
         
@@ -77,8 +68,18 @@ class simplex(solver_interface):
                      self.points[i,:] = np.clip(p1 + self.sigma*self.points[i,:],self.func.bounds[0],self.func.bounds[1])
                 self.sortsimplex()
         
-    def solve_alg(self):
-        
+    def solve_alg(self,func,point_start):
+        self.func = func
+        self.points = np.zeros([func.n_dim+1,func.n_dim])
+        self.points[0,:] = point_start
+
+        #Make all the points in the simplex(n_dim + 1)
+        for i in range(func.n_dim):
+            point_new = np.zeros(func.n_dim)
+            point_new[i] = self.start_size
+            cand_point = point_start + point_new
+            self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])            
+
         #bestpoint = np.zeros([self.max_iter+1,self.func.n_dim])
         #bestpoint[0,:] = self.points[0,:]
         self.sortsimplex()

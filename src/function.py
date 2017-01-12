@@ -33,4 +33,3 @@ class function_interface(object):
                 Z[i,j] = self.evaluate(np.array([X[i,j],Y[i,j]]))
         plt.contour(X,Y,Z,N)
         plt.axes().set_aspect('equal', 'datalim')
-        plt.show()

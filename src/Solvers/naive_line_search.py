@@ -12,18 +12,16 @@ from solver import solver_interface
 #But its more fun to spend time developing the more advanced algorithms, come back to this later
 class naive_line_search(solver_interface):
     
-    def __init__(self, func,point_start, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005,alpha_reduc_factor = 0.8):
-        super().__init__(func)
-        
+    def __init__(self, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005,alpha_reduc_factor = 0.8):
+        super().__init__()
         self.abs_tol = abs_tol
         self.rel_tol = rel_tol
         self.max_iter = max_iter
         
+        self.id = "NAIVE_LINE_SEARCH"
         #the size of the stepping algorithm, and the reduction param
         self.alpha = start_size
         self.alpha_reduc_factor = alpha_reduc_factor
-        
-        self.points = point_start
             
     def step_alg(self):
         for i in range(self.func.n_dim):
@@ -48,7 +46,10 @@ class naive_line_search(solver_interface):
                 self.values = value_neg
                 continue
         
-    def solve_alg(self):        
+    def solve_alg(self, func,point_start):        
+        self.func = func
+        self.points = point_start
+        
         it = 0
         self.values = self.func.evaluate(self.points)        
         bestvals = [self.values]
@@ -72,7 +73,7 @@ class naive_line_search(solver_interface):
                     print("abs diff:    " + str(abs_diff))
                     print("rel diff:    " + str(rel_diff))
                     break
-            if(oldval == self.values):
+            if(oldval <= self.values):
                 self.alpha *= self.alpha_reduc_factor   
             it+=1
         return([self.values, self.points])
