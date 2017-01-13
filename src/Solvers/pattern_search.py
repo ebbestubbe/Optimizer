@@ -17,7 +17,8 @@ class pattern_search(solver_interface):
         
         self.id = "PATTERN_SEARCH"
         #the size of the stepping algorithm, and the reduction param
-        self.size = start_size
+        
+        self.start_size = start_size
         
 
     def step_alg(self):
@@ -25,7 +26,7 @@ class pattern_search(solver_interface):
         value_candidates = []
         for i in range(self.func.n_dim):
             point_mod = np.zeros(self.func.n_dim)
-            point_mod[i] = self.size
+            point_mod[i] = self.step_size
             
             point_neg = np.clip(self.points - point_mod, self.func.bounds[0], self.func.bounds[1])
             value_neg = self.func.evaluate(point_neg)
@@ -50,13 +51,13 @@ class pattern_search(solver_interface):
             self.values = val_lowest
             self.points = point_candidates[min_coords[0]][min_coords[1]]
         else:
-            self.size*=0.5
+            self.step_size*=0.5
 
     def solve_alg(self, func, point_start):
         self.func = func
         self.points = point_start
         self.values = self.func.evaluate(self.points)
-        
+        self.step_size = self.start_size
         n_iter = 0
         while(n_iter < self.max_iter):
             n_iter+=1   

@@ -20,14 +20,14 @@ class naive_line_search(solver_interface):
         
         self.id = "NAIVE_LINE_SEARCH"
         #the size of the stepping algorithm, and the reduction param
-        self.alpha = start_size
+        self.start_size = start_size
         self.alpha_reduc_factor = alpha_reduc_factor
             
     def step_alg(self):
         for i in range(self.func.n_dim):
             
             point_mod = np.zeros(self.func.n_dim)
-            point_mod[i] = self.alpha
+            point_mod[i] = self.step_size
             
             #Check the positive direction. If the value is better, go in that direction
             #If the positive direction is not better, check the negative direction
@@ -49,7 +49,7 @@ class naive_line_search(solver_interface):
     def solve_alg(self, func,point_start):        
         self.func = func
         self.points = point_start
-        
+        self.step_size = self.start_size
         it = 0
         self.values = self.func.evaluate(self.points)        
         bestvals = [self.values]
@@ -74,6 +74,6 @@ class naive_line_search(solver_interface):
                     print("rel diff:    " + str(rel_diff))
                     break
             if(oldval <= self.values):
-                self.alpha *= self.alpha_reduc_factor   
+                self.step_size *= self.alpha_reduc_factor   
             it+=1
         return([self.values, self.points])
