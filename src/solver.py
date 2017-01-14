@@ -11,9 +11,10 @@ Created on Mon Jan  9 17:08:10 2017
 #All solvers have a 'step_alg()' function, which iterates the internal points and values
 #All solvers have a 'solve_alg()' function, which "solves" to the best of its ability, and returns the position and variables
 class solver_interface(object):
-    def __init__(self):
+    def __init__(self,termination_strategies):
         #self.func = func
         self.observers = []
+        self.termination_strategies = termination_strategies
     def attach(self,observer):
         self.observers.append(observer)
     

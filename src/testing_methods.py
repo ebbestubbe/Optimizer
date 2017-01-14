@@ -16,14 +16,14 @@ def fullreport(solver):
     optfuncs = []
     
     optfuncs.append(test_sphere())
-    
+    '''
     optfuncs.append(test_rosenbrock())
     optfuncs.append(test_himmelblau())
     optfuncs.append(test_rastrigin())
     optfuncs.append(test_bukin6())
     optfuncs.append(test_eggholder())
     optfuncs.append(test_cross_in_tray())
-    
+    '''
     for i in range(len(optfuncs)):
         report(optfuncs[i][0],optfuncs[i][1],solver)
     return
@@ -99,7 +99,7 @@ def report(optfunc,startpoint,solver):
     for i in range(len(results)):
         plt.plot(results[i][0][0],results[i][0][1],'b.')
     
-    optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
+    #optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
     
     plt.figure(3)
     lower_x = min([results[i][0][0] for i in range(len(results))])
@@ -116,7 +116,7 @@ def report(optfunc,startpoint,solver):
     for i in range(len(results)):
         plt.plot(results[i][0][0],results[i][0][1],'b.')
     
-    optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
+    #optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
     
     plt.show()
     
