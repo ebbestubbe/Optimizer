@@ -26,3 +26,21 @@ class termination_strategy_tolerance(object):
             if(abs_break or rel_break):
                 return True
         return False
+
+class termination_strategy_max_iter(object):
+    def __init__(self,max_iter):
+        self.max_iter = max_iter
+    
+    def check_termination(self,solver):
+        if(solver.it >= self.max_iter):
+            return True
+        return False
+        
+class termination_strategy_max_eval(object):
+    def __init__(self,max_eval):
+        self.max_eval = max_eval
+        
+    def check_termination(self,solver):
+        if(solver.func.n_evaluations >= self.max_eval):
+            return True
+        return False

@@ -7,15 +7,12 @@ import numpy as np
 from solver import solver_interface 
 class simplex(solver_interface):
     
-    def __init__(self, max_iter = 1000,start_size = 0.005, termination_strategies = []):
+    def __init__(self,start_size = 0.005, termination_strategies = []):
         #Set func as internal variable via super constructor, maybe put more stuff into super constructor later?
         super().__init__(termination_strategies)
         self.id = "NELDER_MEAD_SIMPLEX"
         self.start_size = start_size        
 
-        #set tolerances and max number of iterations        
-        self.max_iter = max_iter
-        
         #set simplex parameter values        
         self.alpha = 1        
         self.gamma = 2
@@ -82,25 +79,16 @@ class simplex(solver_interface):
         self.sortsimplex()
         self.it = 0
         self.bestvals = [self.values[0]]
-        
-        while(self.it < self.max_iter):    
+        #keep going until a termination strategy tells the solver to fuck off
+        while(True):
+            
             self.step()
             self.bestvals.append(self.values[0])
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
-            if(break_bools[0]):
+            #print(break_bools)            
+            if(any(break_bools)):
                 break
-            '''
-            to_checkwith = it - self.func.n_dim*4 #when checking convergence
             
-            if(to_checkwith > 0):
-                abs_diff = bestvals[to_checkwith] - bestvals[-1]
-                rel_diff = abs((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1])              
-                abs_break = (abs_diff < self.abs_tol)
-                rel_break = (rel_diff < self.rel_tol)
-                
-                if(abs_break or rel_break):
-                    break
-            '''
             self.it+=1
         
         return(self.values[0],self.points[0,:])
