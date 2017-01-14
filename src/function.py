@@ -10,9 +10,15 @@ class function_interface(object):
     n_dim: number of dimensions
     bounds: [lower,upper]
     '''    
+    def __init__(self):
+        self.n_evaluations = 0
+
+    def reset_n_evaluations(self):
+        self.n_evaluations = 0
     
     def evaluate(self,var):
         self.checkbounds(var)
+        self.n_evaluations+=1
         assert(self.n_dim == len(var))
     
     def checkbounds(self,var):

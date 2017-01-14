@@ -36,20 +36,17 @@ def main():
     rel_tol = 0
     abs_tol = 0
     
-    max_iter = 10000
+    max_iter = 200
     start_size = 0.05
     
-    solver1 = simplex(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
-    
+    solver1 = simplex(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)    
     fullreport(solver1)
-    
+    return
     alpha_reduc_factor = 0.8
-    solver2 = naive_line_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size,alpha_reduc_factor = alpha_reduc_factor)
-    
+    solver2 = naive_line_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size,alpha_reduc_factor = alpha_reduc_factor)    
     fullreport(solver2)
     
-    solver3 = pattern_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
-    
+    solver3 = pattern_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)    
     fullreport(solver3)
    
     
