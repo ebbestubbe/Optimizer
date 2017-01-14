@@ -18,20 +18,6 @@ from Solvers.terminationstrat import termination_strategy_tolerance
 from Solvers.terminationstrat import termination_strategy_max_iter
 from Solvers.terminationstrat import termination_strategy_max_eval
 def main():
-    '''
-    c = [[0,-8],[-2,6],[3,-9]]
-    
-    b = [x.index(min(x)) for x in c]
-    d = [c[i][b[i]] for i in range(len(b))]
-    print(b)
-    print(d)
-    minval_ind = d.index(min(d))
-    print(minval_ind)
-    minval_coord = [minval_ind, b[minval_ind]]
-    print(minval_coord)
-    print(c[minval_coord[0]][minval_coord[1]])
-    return
-    '''
     plt.close("all")
     
     rel_tol = 10e-10
@@ -51,6 +37,7 @@ def main():
     return
     alpha_reduc_factor = 0.8
     solver2 = naive_line_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size,alpha_reduc_factor = alpha_reduc_factor)    
+
     fullreport(solver2)
     
     solver3 = pattern_search(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)    
