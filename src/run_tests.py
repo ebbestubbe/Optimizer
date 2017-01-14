@@ -16,18 +16,18 @@ from testing_methods import fullreport
 def main():
     plt.close("all")
     
-    rel_tol = 10e-10
-    abs_tol = 10e-10
-    rel_tol = 0
-    abs_tol = 0
+    rel_tol = 10e-3
+    abs_tol = 10e-3
+    #rel_tol = 0
+    #abs_tol = 0
     
     max_iter = 200
     start_size = 0.005
     
     solver1 = simplex(rel_tol = rel_tol, abs_tol = abs_tol, max_iter = max_iter,start_size = start_size)
     
-    #fullreport(solver1)
-    
+    fullreport(solver1)
+    return
     plt.close("all")
     max_iter = 1000
     
