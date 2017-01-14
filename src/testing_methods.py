@@ -16,14 +16,14 @@ def fullreport(solver):
     optfuncs = []
     
     optfuncs.append(test_sphere())
-    '''
+    
     optfuncs.append(test_rosenbrock())
     optfuncs.append(test_himmelblau())
     optfuncs.append(test_rastrigin())
     optfuncs.append(test_bukin6())
     optfuncs.append(test_eggholder())
     optfuncs.append(test_cross_in_tray())
-    '''
+    
     for i in range(len(optfuncs)):
         report(optfuncs[i][0],optfuncs[i][1],solver)
     return

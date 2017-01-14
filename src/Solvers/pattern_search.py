@@ -9,17 +9,14 @@ import numpy as np
 
 class pattern_search(solver_interface):
     
-    def __init__(self, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005,alpha_reduc_factor = 0.8):
-        super().__init__()
-        self.abs_tol = abs_tol
-        self.rel_tol = rel_tol
-        self.max_iter = max_iter
+    def __init__(self,start_size = 0.005,termination_strategies = [],reduc_factor = 0.5):
+        super().__init__(termination_strategies)
         
         self.id = "PATTERN_SEARCH"
         #the size of the stepping algorithm, and the reduction param
         
         self.start_size = start_size
-        
+        self.reduc_factor = reduc_factor
 
     def step_alg(self):
         point_candidates = []
@@ -50,18 +47,27 @@ class pattern_search(solver_interface):
         if(val_lowest < self.values):
             self.values = val_lowest
             self.points = point_candidates[min_coords[0]][min_coords[1]]
-        else:
-            self.step_size*=0.5
-
+        
     def solve_alg(self, func, point_start):
         self.func = func
         self.points = point_start
         self.values = self.func.evaluate(self.points)
         self.step_size = self.start_size
-        n_iter = 0
-        while(n_iter < self.max_iter):
-            n_iter+=1   
-            
+        
+        self.it = 0
+        self.bestvals = [self.values]
+        while(True):
             self.step()
+            self.bestvals.append(self.values)
+            
+            #If there was no improvement: reduce the stepping size:
+            if(self.bestvals[-2] <= self.values):
+                self.step_size*= self.reduc_factor
+            
+            break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
+            if(any(break_bools)):
+                break
+            
+            self.it+=1   
             
         return([self.values,self.points])
