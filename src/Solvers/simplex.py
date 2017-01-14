@@ -7,17 +7,12 @@ import numpy as np
 from solver import solver_interface 
 class simplex(solver_interface):
     
-    def __init__(self, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005):
+    def __init__(self,start_size = 0.005, termination_strategies = []):
         #Set func as internal variable via super constructor, maybe put more stuff into super constructor later?
-        super().__init__()
+        super().__init__(termination_strategies)
         self.id = "NELDER_MEAD_SIMPLEX"
         self.start_size = start_size        
 
-        #set tolerances and max number of iterations        
-        self.abs_tol = abs_tol
-        self.rel_tol = rel_tol
-        self.max_iter = max_iter
-        
         #set simplex parameter values        
         self.alpha = 1        
         self.gamma = 2
@@ -69,10 +64,11 @@ class simplex(solver_interface):
                 self.sortsimplex()
         
     def solve_alg(self,func,point_start):
+        
         self.func = func
         self.points = np.zeros([func.n_dim+1,func.n_dim])
         self.points[0,:] = point_start
-
+        
         #Make all the points in the simplex(n_dim + 1)
         for i in range(func.n_dim):
             point_new = np.zeros(func.n_dim)
@@ -80,30 +76,20 @@ class simplex(solver_interface):
             cand_point = point_start + point_new
             self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])            
 
-        #bestpoint = np.zeros([self.max_iter+1,self.func.n_dim])
-        #bestpoint[0,:] = self.points[0,:]
         self.sortsimplex()
-        bestvals = [self.values[0]]
-        it = 0
-        while(it < self.max_iter):    
-            self.step()
-            bestvals.append(self.values[0])
-            to_checkwith = it - self.func.n_dim*4 #when checking convergence
+        self.it = 0
+        self.bestvals = [self.values[0]]
+        #keep going until a termination strategy tells the solver to fuck off
+        while(True):
             
-            if(to_checkwith > 0):
-                abs_diff = bestvals[to_checkwith] - bestvals[-1]
-                rel_diff = abs((bestvals[to_checkwith] - bestvals[-1])/bestvals[-1])              
-                abs_break = (abs_diff < self.abs_tol)
-                rel_break = (rel_diff < self.rel_tol)
-                
-                if(abs_break or rel_break):
-                    print("breaking: ")
-                    print("current val: " + str(bestvals[-1]))
-                    print("prev val:    " + str(bestvals[to_checkwith]))
-                    print("abs diff:    " + str(abs_diff))
-                    print("rel diff:    " + str(rel_diff))
-                    break
-            it+=1
+            self.step()
+            self.bestvals.append(self.values[0])
+            break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
+            #print(break_bools)            
+            if(any(break_bools)):
+                break
+            
+            self.it+=1
         
         return(self.values[0],self.points[0,:])
     

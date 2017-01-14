@@ -9,6 +9,7 @@ from function import function_interface
 class sphere(function_interface):
     
     def __init__(self, n_dim):
+        super().__init__()
         self.n_dim = n_dim
         self.bounds = [np.array([-10.0]*self.n_dim), np.array([10.0]*self.n_dim)]
 
@@ -21,6 +22,7 @@ class sphere(function_interface):
 #Multidimensional generalizations?
 class rosenbrock(function_interface):
     def __init__(self):#,n_dim):
+        super().__init__()
         self.n_dim = 2        
         self.bounds = [[-5]*self.n_dim, [5]*self.n_dim]
         
@@ -38,6 +40,7 @@ class rosenbrock(function_interface):
 
 class himmelblau(function_interface):
     def __init__(self):
+        super().__init__()
         self.n_dim = 2
         self.bounds = [[-5]*self.n_dim, [5]*self.n_dim]
         
@@ -52,6 +55,7 @@ class himmelblau(function_interface):
 #minimum at f(0,0,0...,0) = 0
 class rastrigin(function_interface):
     def __init__(self,n_dim):
+        super().__init__()
         self.n_dim = n_dim
         self.bounds = [[-5.12]*self.n_dim,[5.12]*self.n_dim]
 
@@ -72,6 +76,7 @@ class rastrigin(function_interface):
 #minimum at f(-10,1) = 0
 class bukin6(function_interface):
     def __init__(self):
+        super().__init__()
         self.n_dim = 2
         self.bounds = [[-15,-3],[-5,3]]
         
@@ -86,6 +91,7 @@ class bukin6(function_interface):
 #minimum at f(512,404.2319) = -959.6407
 class eggholder(function_interface):
     def __init__(self):
+        super().__init__()
         self.n_dim = 2
         self.bounds = [[-512]*2,[512]*2]
     
@@ -102,6 +108,7 @@ class eggholder(function_interface):
 #minimum at f(+- 1.34941, +-1.34941) = -2.06261
 class cross_in_tray(function_interface):
     def __init__(self):
+        super().__init__()
         self.n_dim = 2
         self.bounds = [[-10]*2,[10]*2]
         

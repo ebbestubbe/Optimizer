@@ -119,6 +119,7 @@ def report(optfunc,startpoint,solver):
     optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
     
     plt.show()
+    
     '''    
     plt.figure(4)
     plt.subplot(2,1,1)
