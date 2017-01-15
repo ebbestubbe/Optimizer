@@ -28,38 +28,38 @@ class naive_line_search(solver_interface):
             
             #Check the positive direction. If the value is better, go in that direction
             #If the positive direction is not better, check the negative direction
-            point_pos = np.clip(self.points + point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_pos = np.clip(self.bestpoint + point_mod, self.func.bounds[0], self.func.bounds[1])
             value_pos = self.func.evaluate(point_pos)
             
-            if(value_pos <= self.values):
-                self.points = point_pos
-                self.values = value_pos
+            if(value_pos <= self.bestvalue):
+                self.bestpoint = point_pos
+                self.bestvalue = value_pos
                 continue
-            point_neg = np.clip(self.points - point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_neg = np.clip(self.bestpoint - point_mod, self.func.bounds[0], self.func.bounds[1])
             value_neg = self.func.evaluate(point_neg)
             
-            if(value_neg <= self.values):
-                self.points = point_neg
-                self.values = value_neg
+            if(value_neg <= self.bestvalue):
+                self.bestpoint = point_neg
+                self.bestvalue = value_neg
                 continue
         
     def solve_alg(self, func,point_start):        
         self.func = func
-        self.points = point_start
+        self.bestpoint = point_start
         self.step_size = self.start_size
         self.it = 0
-        self.values = self.func.evaluate(self.points)        
-        self.bestvals = [self.values]
+        self.bestvalue = self.func.evaluate(self.bestpoint)        
+        self.bestvals = [self.bestvalue]
         
         while(True):    
             self.step()
-            self.bestvals.append(self.values)
+            self.bestvals.append(self.bestvalue)
             #If there was no improvement, reduce the step size
-            if(self.bestvals[-2] <= self.values):
+            if(self.bestvals[-2] <= self.bestvalue):
                 self.step_size *= self.reduc_factor   
             
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
             if(any(break_bools)):
                 break
             self.it+=1
-        return([self.values, self.points])
+        return([self.bestvalue, self.bestpoint])

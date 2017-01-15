@@ -41,20 +41,6 @@ class observer_simplex_print_log(observer):
     def notify_shrinking(self):
         print("Shrinking")        
 
-#The results are given in a the data format [step iteration][points//vals][simplex corner]
-#so [results[i][1][0] for i in range(len(results))] gives the best value in each iteration
-        
-class observer_simplex_step_log(observer):    
-    def __init__(self,optimizer):    
-        self.result = []
-        self.optimizer = optimizer
-    def notify_step_end(self):
-        points = self.optimizer.points
-        vals = self.optimizer.values
-        self.result.append([points,vals])
-    def get_result(self):
-        return self.result
-
 class observer_timeit(observer):    
     def __init__(self):
         #The variables to be returned
@@ -81,14 +67,32 @@ class observer_timeit(observer):
         return self.solvetime
         
 #save the minimum function value at each step:
-class observer_function_eval(observer):
+class observer_step_log(observer):
     def __init__(self,solver):
         self.result = []
         self.solver = solver
     def notify_step_end(self):
         n_eval = self.solver.func.n_evaluations
-        points = self.solver.points
-        vals = self.solver.values
-        self.result.append([n_eval,points,vals])
+        points = self.solver.bestpoint
+        vals = self.solver.bestvalue
+        self.result.append([vals,points,n_eval])
     def get_result(self):
         return self.result
+        
+        
+'''
+Stuff saved for saving the whole population
+#The results are given in a the data format [step iteration][points//vals][simplex corner]
+#so [results[i][1][0] for i in range(len(results))] gives the best value in each iteration
+        
+class observer_simplex_step_log(observer):    
+    def __init__(self,solver):    
+        self.result = []
+        self.solver = solver
+    def notify_step_end(self):
+        points = self.solver.bestpoint
+        vals = self.solver.bestvalue
+        self.result.append([points,vals])
+    def get_result(self):
+        return self.result
+'''

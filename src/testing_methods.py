@@ -11,6 +11,82 @@ from Solvers.simplex import simplex
 import Solvers.observers
 import Functions.test_functions
 
+from Solvers.simplex import simplex
+from Solvers.naive_line_search import naive_line_search
+from Solvers.pattern_search import pattern_search
+
+import Solvers.terminationstrat
+
+def comparesolvers(solvers,optfunc,startpoint):
+    colors = ['b','k','g','m']
+    for j in range(len(solvers)):
+        solver = solvers[j]
+        #observer_time = Solvers.observers.observer_timeit()
+        observer_step_log = Solvers.observers.observer_step_log(solver)
+        #observer_log = Solvers.observers.observer_simplex_print_log()
+        
+        #solver.attach(observer_step_log)
+        #solver.attach(observer_time)
+        solver.attach(observer_step_log)
+        #solver.attach(observer_log)
+        
+        val,var = solver.solve(optfunc,startpoint)
+        
+        #solvetime = observer_time.get_solvetime()
+        #steptimes = observer_time.get_steptimes()
+        
+        result_log = observer_step_log.get_result()
+    
+        plt.figure(1)
+        plt.plot([result_log[i][2] for i in range(len(result_log))],[result_log[i][0] for i in range(len(result_log))],colors[j])
+        plt.title(optfunc.id)
+        plt.xlabel('Number of function evaluations')
+        plt.ylabel('Function value')
+        
+        plt.figure(2)
+        for i in range(len(optfunc.min_points)):
+            plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
+        
+        for i in range(len(result_log)):
+            plt.plot(result_log[i][1][0],result_log[i][1][1],colors[j] + ".")
+        
+        optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
+        plt.xlabel('x')
+        plt.ylabel('y')
+        
+        optfunc.reset_n_evaluations()
+        
+    plt.show()
+
+def makeallsolvers():
+    rel_tol = 10e-10
+    abs_tol = 10e-10
+    
+    check_depth = 3
+    #rel_tol = 0
+    #abs_tol = 0
+    max_eval = 100
+    max_iter = 200
+    start_size = 0.005
+    t_strat_tol = Solvers.terminationstrat.termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
+    t_strat_max_iter = Solvers.terminationstrat.termination_strategy_max_iter(max_iter = max_iter)
+    t_strat_max_eval = Solvers.terminationstrat.termination_strategy_max_eval(max_eval = max_eval)
+    termination_strategies = [t_strat_tol,t_strat_max_iter,t_strat_max_eval]
+    
+    simplex_solver = simplex(start_size = start_size,termination_strategies = termination_strategies)    
+    reduc_factor = 0.8
+    
+    linesearch_solver = naive_line_search(start_size = start_size, termination_strategies = termination_strategies,reduc_factor = reduc_factor)
+ 
+    patternsearch_solver = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
+    
+    #pop_size = 20
+    #ga_solver = genetic_algorithm(pop_size = pop_size)
+    
+    solvers = [simplex_solver,linesearch_solver,patternsearch_solver]
+    return solvers
+        
+
 #Use this to run on all test functions, and report everything necessary
 def fullreport(solver): 
     optfuncs = []
@@ -64,14 +140,14 @@ def test_cross_in_tray():
     return [optfunc,startpoint]
     
 def report(optfunc,startpoint,solver):
-    observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
+    #observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
-    observer_func = Solvers.observers.observer_function_eval(solver)
+    observer_step_log = Solvers.observers.observer_step_log(solver)
     #observer_log = Solvers.observers.observer_simplex_print_log()
     
-    solver.attach(observer_step_log)
+    #solver.attach(observer_step_log)
     solver.attach(observer_time)
-    solver.attach(observer_func)
+    solver.attach(observer_step_log)
     #solver.attach(observer_log)
     
     val,var = solver.solve(optfunc,startpoint)
@@ -79,49 +155,32 @@ def report(optfunc,startpoint,solver):
     solvetime = observer_time.get_solvetime()
     steptimes = observer_time.get_steptimes()
     
-    results = observer_step_log.get_result()
-    results_eval = observer_func.get_result()
-    #reduce results for plotting
-    if(solver.id == "NELDER_MEAD_SIMPLEX"):
-        red_results = []
-        
-        for i in range(len(results)):
-            p = results[i][0][0]
-            v = results[i][1][0]
-            pair = [p,v]
-            red_results.append(pair)
-        results = red_results
-        red_results_func = []
-        for i in range(len(results_eval)):
-            e = results_eval[i][0]
-            p = results_eval[i][1][0]
-            v = results_eval[i][2][0]
-            pair = [e,p,v]
-            red_results_func.append(pair)
-        results_eval = red_results_func
+    result_log = observer_step_log.get_result()
     
     plt.figure(1)
-    plt.plot([results[i][1] for i in range(len(results))])
-    plt.show()
+    plt.plot([result_log[i][2] for i in range(len(result_log))],[result_log[i][0] for i in range(len(result_log))])
+    plt.title(solver.id + " on " + optfunc.id)
+    plt.xlabel('Number of function evaluations')
+    plt.ylabel('Function value')
     
     plt.figure(2)
-    plt.plot([results_eval[i][0] for i in range(len(results_eval))],[results_eval[i][2] for i in range(len(results_eval))])
-    plt.show()
-    
-    plt.figure(3)
     for i in range(len(optfunc.min_points)):
         plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
     
-    for i in range(len(results)):
-        plt.plot(results[i][0][0],results[i][0][1],'b.')
+    for i in range(len(result_log)):
+        plt.plot(result_log[i][1][0],result_log[i][1][1],'b.')
     
     optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
+    plt.title(solver.id + " on " + optfunc.id)
+    plt.xlabel('x')
+    plt.ylabel('y')
     
-    plt.figure(4)
-    lower_x = min([results[i][0][0] for i in range(len(results))])
-    upper_x = max([results[i][0][0] for i in range(len(results))])
-    lower_y = min([results[i][0][1] for i in range(len(results))])
-    upper_y = max([results[i][0][1] for i in range(len(results))])
+    
+    plt.figure(3)
+    lower_x = min([result_log[i][1][0] for i in range(len(result_log))])
+    upper_x = max([result_log[i][1][0] for i in range(len(result_log))])
+    lower_y = min([result_log[i][1][1] for i in range(len(result_log))])
+    upper_y = max([result_log[i][1][1] for i in range(len(result_log))])
     
     for i in range(len(optfunc.min_points)):
         within_x = (lower_x <= optfunc.min_points[i][0] and upper_x >= optfunc.min_points[i][0])
@@ -129,11 +188,13 @@ def report(optfunc,startpoint,solver):
         if(within_x and within_y):
             plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
     
-    for i in range(len(results)):
-        plt.plot(results[i][0][0],results[i][0][1],'b.')
+    for i in range(len(result_log)):
+        plt.plot(result_log[i][1][0],result_log[i][1][1],'b.')
     
     optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
-    
+    plt.title(solver.id + " on " + optfunc.id)
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
     
     '''    
