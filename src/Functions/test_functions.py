@@ -10,6 +10,7 @@ class sphere(function_interface):
     
     def __init__(self, n_dim):
         super().__init__()
+        self.id = 'SPHERE'
         self.n_dim = n_dim
         self.bounds = [np.array([-10.0]*self.n_dim), np.array([10.0]*self.n_dim)]
 
@@ -23,6 +24,7 @@ class sphere(function_interface):
 class rosenbrock(function_interface):
     def __init__(self):#,n_dim):
         super().__init__()
+        self.id = 'ROSENBROCK'
         self.n_dim = 2        
         self.bounds = [[-5]*self.n_dim, [5]*self.n_dim]
         
@@ -41,6 +43,7 @@ class rosenbrock(function_interface):
 class himmelblau(function_interface):
     def __init__(self):
         super().__init__()
+        self.id = 'HIMMELBLAU'
         self.n_dim = 2
         self.bounds = [[-5]*self.n_dim, [5]*self.n_dim]
         
@@ -56,6 +59,7 @@ class himmelblau(function_interface):
 class rastrigin(function_interface):
     def __init__(self,n_dim):
         super().__init__()
+        self.id = 'RASTRIGIN'
         self.n_dim = n_dim
         self.bounds = [[-5.12]*self.n_dim,[5.12]*self.n_dim]
 
@@ -77,6 +81,7 @@ class rastrigin(function_interface):
 class bukin6(function_interface):
     def __init__(self):
         super().__init__()
+        self.id = 'BUKIN6'
         self.n_dim = 2
         self.bounds = [[-15,-3],[-5,3]]
         
@@ -92,6 +97,7 @@ class bukin6(function_interface):
 class eggholder(function_interface):
     def __init__(self):
         super().__init__()
+        self.id = 'EGGHOLDER'
         self.n_dim = 2
         self.bounds = [[-512]*2,[512]*2]
     
@@ -109,6 +115,7 @@ class eggholder(function_interface):
 class cross_in_tray(function_interface):
     def __init__(self):
         super().__init__()
+        self.id = 'CROSS_IN_TRAY'
         self.n_dim = 2
         self.bounds = [[-10]*2,[10]*2]
         

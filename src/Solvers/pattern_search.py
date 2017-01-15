@@ -9,17 +9,14 @@ import numpy as np
 
 class pattern_search(solver_interface):
     
-    def __init__(self, abs_tol = 0.0001, rel_tol = 0.0001, max_iter = 1000,start_size = 0.005,alpha_reduc_factor = 0.8):
-        super().__init__()
-        self.abs_tol = abs_tol
-        self.rel_tol = rel_tol
-        self.max_iter = max_iter
+    def __init__(self,start_size = 0.005,termination_strategies = [],reduc_factor = 0.5):
+        super().__init__(termination_strategies)
         
         self.id = "PATTERN_SEARCH"
         #the size of the stepping algorithm, and the reduction param
         
         self.start_size = start_size
-        
+        self.reduc_factor = reduc_factor
 
     def step_alg(self):
         point_candidates = []
@@ -28,10 +25,10 @@ class pattern_search(solver_interface):
             point_mod = np.zeros(self.func.n_dim)
             point_mod[i] = self.step_size
             
-            point_neg = np.clip(self.points - point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_neg = np.clip(self.bestpoint - point_mod, self.func.bounds[0], self.func.bounds[1])
             value_neg = self.func.evaluate(point_neg)
             
-            point_pos = np.clip(self.points + point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_pos = np.clip(self.bestpoint + point_mod, self.func.bounds[0], self.func.bounds[1])
             value_pos = self.func.evaluate(point_pos)
             
             point_candidates.append([point_neg, point_pos])
@@ -47,21 +44,30 @@ class pattern_search(solver_interface):
         min_coords = [min_dimension,min_direction[min_dimension]]
         
         val_lowest = value_candidates[min_coords[0]][min_coords[1]]
-        if(val_lowest < self.values):
-            self.values = val_lowest
-            self.points = point_candidates[min_coords[0]][min_coords[1]]
-        else:
-            self.step_size*=0.5
-
+        if(val_lowest < self.bestvalue):
+            self.bestvalue = val_lowest
+            self.bestpoint = point_candidates[min_coords[0]][min_coords[1]]
+        
     def solve_alg(self, func, point_start):
         self.func = func
-        self.points = point_start
-        self.values = self.func.evaluate(self.points)
+        self.bestpoint = point_start
+        self.bestvalue = self.func.evaluate(self.bestpoint)
         self.step_size = self.start_size
-        n_iter = 0
-        while(n_iter < self.max_iter):
-            n_iter+=1   
-            
+        
+        self.it = 0
+        self.bestvals = [self.bestvalue]
+        while(True):
             self.step()
+            self.bestvals.append(self.bestvalue)
             
-        return([self.values,self.points])
+            #If there was no improvement: reduce the stepping size:
+            if(self.bestvals[-2] <= self.bestvalue):
+                self.step_size*= self.reduc_factor
+            
+            break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
+            if(any(break_bools)):
+                break
+            
+            self.it+=1   
+            
+        return([self.bestvalue,self.bestpoint])

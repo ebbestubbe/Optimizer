@@ -31,3 +31,6 @@ RESULTS:
 way down the line:
 	parallelization
 	use gfxcard
+	
+What happens if i use the same solver multiple times?
+What happens if i use the same func multiple times?

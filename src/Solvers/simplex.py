@@ -23,17 +23,17 @@ class simplex(solver_interface):
     #Stepping algorithm, as per wikipedia
     def step_alg(self):
         
-        centroid = np.average(self.points[0:-1,:],axis=0)
+        centroid = np.average(self.population[0:-1,:],axis=0)
         
         #3:reflection
-        reflected = np.clip(centroid*(1+self.alpha) - self.alpha*self.points[-1,:],self.func.bounds[0],self.func.bounds[1])        
+        reflected = np.clip(centroid*(1+self.alpha) - self.alpha*self.population[-1,:],self.func.bounds[0],self.func.bounds[1])        
         reflected_val = self.func.evaluate(reflected)        
-        if(self.values[0] <= reflected_val and reflected_val < self.values[-2]):
+        if(self.population_values[0] <= reflected_val and reflected_val < self.population_values[-2]):
             [i.notify_reflecting() for i in self.observers]
             self.insertpoint(reflected,reflected_val)
             
         #4:expansion:
-        elif(reflected_val < self.values[0]):
+        elif(reflected_val < self.population_values[0]):
             expanded = np.clip(centroid * (1 - self.gamma) + self.gamma*reflected,self.func.bounds[0],self.func.bounds[1])
             expanded_val = self.func.evaluate(expanded)
             
@@ -47,43 +47,43 @@ class simplex(solver_interface):
                 
         #5:contraction
         else:
-            contracted = np.clip(centroid*(1 - self.rho) + self.rho*self.points[-1,:],self.func.bounds[0],self.func.bounds[1])
+            contracted = np.clip(centroid*(1 - self.rho) + self.rho*self.population[-1,:],self.func.bounds[0],self.func.bounds[1])
             contracted_val = self.func.evaluate(contracted)
             
-            if(contracted_val < self.values[-1]):
+            if(contracted_val < self.population_values[-1]):
                 [i.notify_contracting() for i in self.observers]
                 self.insertpoint(contracted,contracted_val)
                 
             #6:shrink
             else:
                 [i.notify_shrinking() for i in self.observers]
-                p1 = self.points[0,:] * (1-self.sigma) #precalc
+                p1 = self.population[0,:] * (1-self.sigma) #precalc
                 
-                for i in range(1,self.points.shape[0]):
-                     self.points[i,:] = np.clip(p1 + self.sigma*self.points[i,:],self.func.bounds[0],self.func.bounds[1])
+                for i in range(1,self.population.shape[0]):
+                     self.population[i,:] = np.clip(p1 + self.sigma*self.population[i,:],self.func.bounds[0],self.func.bounds[1])
                 self.sortsimplex()
         
     def solve_alg(self,func,point_start):
         
         self.func = func
-        self.points = np.zeros([func.n_dim+1,func.n_dim])
-        self.points[0,:] = point_start
+        self.population = np.zeros([func.n_dim+1,func.n_dim])
+        self.population[0,:] = point_start
         
         #Make all the points in the simplex(n_dim + 1)
         for i in range(func.n_dim):
             point_new = np.zeros(func.n_dim)
             point_new[i] = self.start_size
             cand_point = point_start + point_new
-            self.points[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])            
+            self.population[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])            
 
         self.sortsimplex()
         self.it = 0
-        self.bestvals = [self.values[0]]
+        self.bestvals = [self.population_values[0]]
         #keep going until a termination strategy tells the solver to fuck off
         while(True):
             
             self.step()
-            self.bestvals.append(self.values[0])
+            self.bestvals.append(self.population_values[0])
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
             #print(break_bools)            
             if(any(break_bools)):
@@ -91,26 +91,32 @@ class simplex(solver_interface):
             
             self.it+=1
         
-        return(self.values[0],self.points[0,:])
+        return(self.population_values[0],self.population[0,:])
     
     #Sort points and values such that the lowest values come first.    
     #Should only be called when all points are to be evaluated(init and shrinking)
     def sortsimplex(self):   
-        self.values = np.array([self.func.evaluate(self.points[i]) for i in range(len(self.points))])
-        a = self.values.argsort()        
-        self.values = self.values[a]
-        self.points = self.points[a]
+        self.population_values = np.array([self.func.evaluate(self.population[i]) for i in range(len(self.population))])
+        a = self.population_values.argsort()        
+        self.population_values = self.population_values[a]
+        self.population = self.population[a]
+        self.setbest()
         
     #Explicitly only used for the simplex:
-    #Method to insert a point into the self.points and self.values, such that the list remains sorted
+    #Method to insert a point into the self.population and self.population_values, such that the list remains sorted
     #Saves computation time, as all points do not have to be re-evaluated
     def insertpoint(self,point,value):
         #Remove the worst point
-        self.points = self.points[0:-1,:]
-        self.values = self.values[0:-1]
+        self.population = self.population[0:-1,:]
+        self.population_values = self.population_values[0:-1]
         #Figure out where to put the point:
-        insert_ind = np.searchsorted(self.values,value)
+        insert_ind = np.searchsorted(self.population_values,value)
         #Insert the point and value at the sorted position        
-        self.values = np.insert(self.values,insert_ind,value)
-        self.points = np.insert(self.points,insert_ind,point,axis=0)
-    
+        self.population_values = np.insert(self.population_values,insert_ind,value)
+        self.population = np.insert(self.population,insert_ind,point,axis=0)
+        self.setbest()
+        
+#Keep track of the best point in a seperate variable, for ease of observers and result handling:
+    def setbest(self):
+        self.bestpoint = self.population[0,:]
+        self.bestvalue = self.population_values[0]
