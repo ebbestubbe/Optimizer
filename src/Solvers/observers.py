@@ -79,3 +79,16 @@ class observer_timeit(observer):
         return self.steptimes
     def get_solvetime(self):
         return self.solvetime
+        
+#save the minimum function value at each step:
+class observer_function_eval(observer):
+    def __init__(self,solver):
+        self.result = []
+        self.solver = solver
+    def notify_step_end(self):
+        n_eval = self.solver.func.n_evaluations
+        points = self.solver.points
+        vals = self.solver.values
+        self.result.append([n_eval,points,vals])
+    def get_result(self):
+        return self.result

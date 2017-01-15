@@ -66,10 +66,12 @@ def test_cross_in_tray():
 def report(optfunc,startpoint,solver):
     observer_step_log = Solvers.observers.observer_simplex_step_log(solver)
     observer_time = Solvers.observers.observer_timeit()
+    observer_func = Solvers.observers.observer_function_eval(solver)
     #observer_log = Solvers.observers.observer_simplex_print_log()
     
     solver.attach(observer_step_log)
     solver.attach(observer_time)
+    solver.attach(observer_func)
     #solver.attach(observer_log)
     
     val,var = solver.solve(optfunc,startpoint)
@@ -78,21 +80,35 @@ def report(optfunc,startpoint,solver):
     steptimes = observer_time.get_steptimes()
     
     results = observer_step_log.get_result()
+    results_eval = observer_func.get_result()
     #reduce results for plotting
     if(solver.id == "NELDER_MEAD_SIMPLEX"):
         red_results = []
+        
         for i in range(len(results)):
             p = results[i][0][0]
             v = results[i][1][0]
             pair = [p,v]
             red_results.append(pair)
         results = red_results
+        red_results_func = []
+        for i in range(len(results_eval)):
+            e = results_eval[i][0]
+            p = results_eval[i][1][0]
+            v = results_eval[i][2][0]
+            pair = [e,p,v]
+            red_results_func.append(pair)
+        results_eval = red_results_func
     
     plt.figure(1)
     plt.plot([results[i][1] for i in range(len(results))])
     plt.show()
     
     plt.figure(2)
+    plt.plot([results_eval[i][0] for i in range(len(results_eval))],[results_eval[i][2] for i in range(len(results_eval))])
+    plt.show()
+    
+    plt.figure(3)
     for i in range(len(optfunc.min_points)):
         plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
     
@@ -101,7 +117,7 @@ def report(optfunc,startpoint,solver):
     
     optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
     
-    plt.figure(3)
+    plt.figure(4)
     lower_x = min([results[i][0][0] for i in range(len(results))])
     upper_x = max([results[i][0][0] for i in range(len(results))])
     lower_y = min([results[i][0][1] for i in range(len(results))])

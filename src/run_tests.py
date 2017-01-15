@@ -29,7 +29,7 @@ def main():
     #rel_tol = 0
     #abs_tol = 0
     max_eval = 300
-    max_iter = 2000
+    max_iter = 30
     start_size = 0.005
     t_strat_tol = termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
     t_strat_max_iter = termination_strategy_max_iter(max_iter = max_iter)
@@ -46,7 +46,7 @@ def main():
 
     solver3 = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
     fullreport(solver3)
-   
+    
     
 if __name__ == '__main__':
     main()
