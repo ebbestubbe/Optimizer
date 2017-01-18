@@ -61,7 +61,7 @@ class simplex(solver_interface):
                 
                 for i in range(1,self.population.shape[0]):
                      self.population[i,:] = np.clip(p1 + self.sigma*self.population[i,:],self.func.bounds[0],self.func.bounds[1])
-                self.sortsimplex()
+                self.sortpopulation()
         
     def solve_alg(self,func,point_start):
         
@@ -76,7 +76,7 @@ class simplex(solver_interface):
             cand_point = point_start + point_new
             self.population[i+1,:] = np.clip(cand_point,self.func.bounds[0],self.func.bounds[1])            
 
-        self.sortsimplex()
+        self.sortpopulation()
         self.it = 0
         self.bestvals = [self.population_values[0]]
         #keep going until a termination strategy tells the solver to fuck off
@@ -95,7 +95,7 @@ class simplex(solver_interface):
     
     #Sort points and values such that the lowest values come first.    
     #Should only be called when all points are to be evaluated(init and shrinking)
-    def sortsimplex(self):   
+    def sortpopulation(self):   
         self.population_values = np.array([self.func.evaluate(self.population[i]) for i in range(len(self.population))])
         a = self.population_values.argsort()        
         self.population_values = self.population_values[a]
