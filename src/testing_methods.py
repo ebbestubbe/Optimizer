@@ -14,6 +14,8 @@ import Functions.test_functions
 from Solvers.simplex import simplex
 from Solvers.naive_line_search import naive_line_search
 from Solvers.pattern_search import pattern_search
+from Solvers.genetic_algorithm import genetic_algorithm
+
 
 import Solvers.terminationstrat
 
@@ -90,16 +92,18 @@ def makeallsolvers():
 #Use this to run on all test functions, and report everything necessary
 def fullreport(solver): 
     optfuncs = []
-    
+    '''
     optfuncs.append(test_sphere())
     
     optfuncs.append(test_rosenbrock())
     optfuncs.append(test_himmelblau())
+    '''
     optfuncs.append(test_rastrigin())
+    '''
     optfuncs.append(test_bukin6())
     optfuncs.append(test_eggholder())
     optfuncs.append(test_cross_in_tray())
-    
+    '''
     for i in range(len(optfuncs)):
         report(optfuncs[i][0],optfuncs[i][1],solver)
     return
@@ -120,7 +124,7 @@ def test_himmelblau():
     return [optfunc,startpoint]
     
 def test_rastrigin():
-    optfunc = Functions.test_functions.rastrigin(2)
+    optfunc = Functions.test_functions.rastrigin(10)
     startpoint = np.array([0.4,-0.3])   
     return [optfunc,startpoint]
     
@@ -162,13 +166,13 @@ def report(optfunc,startpoint,solver):
     plt.title(solver.id + " on " + optfunc.id)
     plt.xlabel('Number of function evaluations')
     plt.ylabel('Function value')
-    
+    '''
     plt.figure(2)
     for i in range(len(optfunc.min_points)):
         plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
     
     for i in range(len(result_log)):
-        plt.plot(result_log[i][1][0],result_log[i][1][1],'b.')
+        plt.plot(result_log[i][1][0],result_log[i][1][1],'k.')
     
     optfunc.contour(optfunc.bounds[0],optfunc.bounds[1],points = 100,N=15)
     plt.title(solver.id + " on " + optfunc.id)
@@ -189,14 +193,14 @@ def report(optfunc,startpoint,solver):
             plt.plot(optfunc.min_points[i][0],optfunc.min_points[i][1],'ro')
     
     for i in range(len(result_log)):
-        plt.plot(result_log[i][1][0],result_log[i][1][1],'b.')
+        plt.plot(result_log[i][1][0],result_log[i][1][1],'k.')
     
     optfunc.contour([lower_x, lower_y],[upper_x, upper_y],points = 100,N=15)
     plt.title(solver.id + " on " + optfunc.id)
     plt.xlabel('x')
     plt.ylabel('y')
     plt.show()
-    
+    '''
     '''    
     plt.figure(4)
     plt.subplot(2,1,1)
