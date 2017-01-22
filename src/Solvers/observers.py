@@ -78,21 +78,57 @@ class observer_step_log(observer):
         self.result.append([vals,points,n_eval])
     def get_result(self):
         return self.result
+
+#prints a log of the time progress, iterations, evaluations, and estimations for the ending time, if there is such a thing.
+#REMAKE: take the evaluation and iteration number from termination strategies directly
+class observer_step_print(observer):
+    def __init__(self,solver,n_step_interval = 1):
+        self.n_step_interval = n_step_interval
+        self.solver = solver
         
+        self.max_it = None
+        self.max_eval = None
+    
+    def notify_solve_start(self):
+        self.time_starttime = timeit.default_timer()
+        t_strat = self.solver.termination_strategies
+        for i in range(len(t_strat)):
+            if(t_strat[i].id == "TERMINATION_STRATEGY_MAX_ITER"):
+                self.max_it = t_strat[i].max_iter
+            if(t_strat[i].id == "TERMINATION_STRATEGY_MAX_EVAL"):
+                self.max_eval = t_strat[i].max_eval
+                        
+                
+    def notify_step_end(self):
+        print_bool = (self.solver.it % self.n_step_interval) == 0 #Check to see if we have to print
         
-'''
-Stuff saved for saving the whole population
+        if(print_bool):
+            step_time = timeit.default_timer()
+            time_elapsed = step_time - self.time_starttime
+            outputstring = "time: " + str(round(time_elapsed/60)) + " min; it: " + str(self.solver.it) + "; eval: " + str(self.solver.func.n_evaluations) + ";"
+            
+            estimations = []
+            if (self.max_it != None):
+                time_per_it = time_elapsed/(self.solver.it+1)
+                est_it = (self.max_it - self.solver.it)*time_per_it
+                estimations.append(est_it)
+            if (self.max_eval != None):
+                time_per_eval = time_elapsed/self.solver.func.n_evaluations
+                est_eval = (self.max_eval - self.solver.func.n_evaluations)*time_per_eval
+                estimations.append(est_eval)
+            if(self.max_it != None or self.max_eval != None):
+                outputstring += " time left: " + str(round(min(estimations)/60)) + " min;"
+            print(outputstring)
+            
 #The results are given in a the data format [step iteration][points//vals][simplex corner]
-#so [results[i][1][0] for i in range(len(results))] gives the best value in each iteration
-        
-class observer_simplex_step_log(observer):    
+#so [results[i][1][0] for i in range(len(results))] gives the best value in each iteration        
+class observer_population_log(observer):    
     def __init__(self,solver):    
         self.result = []
         self.solver = solver
     def notify_step_end(self):
-        points = self.solver.bestpoint
-        vals = self.solver.bestvalue
-        self.result.append([points,vals])
+        pop = self.solver.population
+        vals = self.solver.population_values
+        self.result.append([pop,vals])
     def get_result(self):
         return self.result
-'''

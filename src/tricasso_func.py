@@ -24,6 +24,7 @@ from function import function_interface
 class tricasso_func(function_interface):
     
     def __init__(self,image,n_triangles):
+        super().__init__()
         self.n_dim = n_triangles*9
         self.target = image
         self.trial = trial_init(self.target)
@@ -38,7 +39,7 @@ class tricasso_func(function_interface):
         self.bounds = [lower, upper]
        
     def evaluate(self,var):
-        function_interface.evaluate(self,var)
+        super(tricasso_func,self).evaluate(var)
         trial_copy = np.copy(self.trial)
         add_triangles(trial_copy,var)
         '''

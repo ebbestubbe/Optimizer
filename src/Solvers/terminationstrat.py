@@ -11,6 +11,7 @@ Created on Sat Jan 14 14:05:48 2017
 #It is too unstable to check this every step
 class termination_strategy_tolerance(object):
     def __init__(self,rel_tol = 10e-5, abs_tol = 10e-5, check_depth = 4):
+        self.id = "TERMINATION_STRATEGY_TOLERANCE"
         self.rel_tol = rel_tol
         self.abs_tol = abs_tol
         self.check_depth = check_depth
@@ -29,6 +30,7 @@ class termination_strategy_tolerance(object):
 
 class termination_strategy_max_iter(object):
     def __init__(self,max_iter):
+        self.id = "TERMINATION_STRATEGY_MAX_ITER"
         self.max_iter = max_iter
     
     def check_termination(self,solver):
@@ -38,6 +40,7 @@ class termination_strategy_max_iter(object):
         
 class termination_strategy_max_eval(object):
     def __init__(self,max_eval):
+        self.id = "TERMINATION_STRATEGY_MAX_EVAL"
         self.max_eval = max_eval
         
     def check_termination(self,solver):

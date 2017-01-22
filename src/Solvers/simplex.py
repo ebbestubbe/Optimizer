@@ -12,6 +12,7 @@ class simplex(solver_interface):
         super().__init__(termination_strategies)
         self.id = "NELDER_MEAD_SIMPLEX"
         self.start_size = start_size        
+        self.population = []
 
         #set simplex parameter values        
         self.alpha = 1        
