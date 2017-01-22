@@ -12,6 +12,7 @@ class genetic_algorithm(solver_interface):
         #Set func as internal variable via super constructor, maybe put more stuff into super constructor later?
         super().__init__(termination_strategies)
         self.pop_size = pop_size
+        self.population = []
         #self.n_select = np.floor(pop_size/2)
         self.id = "GENETIC_ALGORITHM"
         
@@ -59,6 +60,7 @@ class genetic_algorithm(solver_interface):
         v2_copy[mask] = 0
         v_child =  v1_copy +  v2_copy    
         
+        #if(random.uniform(0,1) > 0.9):
         mut_term = np.random.normal(0.0,0.05,self.func.n_dim)
         v_child += mut_term
         v_child = np.clip(v_child,self.func.bounds[0],self.func.bounds[1])
