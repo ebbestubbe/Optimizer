@@ -22,8 +22,8 @@ from Solvers.terminationstrat import termination_strategy_tolerance
 from Solvers.terminationstrat import termination_strategy_max_iter
 from Solvers.terminationstrat import termination_strategy_max_eval
 def main():
-    #testall()
-    comp()
+    testall()
+    #comp()
     return
 def comp():
     solvers = testing_methods.makeallsolvers()
@@ -40,7 +40,7 @@ def testall():
     check_depth = 5
     #rel_tol = 0
     #abs_tol = 0
-    max_eval = 3000
+    max_eval = 300
     max_iter = 100
     start_size = 0.05
     t_strat_tol = termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
@@ -58,9 +58,12 @@ def testall():
     solver3 = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
     #fullreport_all(solver3)
     
-    pop_size = 100
+    pop_size = 10
     solver4 = genetic_algorithm(pop_size = pop_size, termination_strategies = termination_strategies)
     fullreport_all(solver4)
+    solver4 = genetic_algorithm(pop_size = pop_size, termination_strategies = termination_strategies)
+    fullreport_all(solver4)
+    
     
 if __name__ == '__main__':
     main()

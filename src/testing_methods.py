@@ -21,6 +21,7 @@ import Solvers.terminationstrat
 
 def comparesolvers(solvers,optfunc,startpoint):
     colors = ['b','k','g','m']
+    plots = [None]*len(solvers)
     for j in range(len(solvers)):
         solver = solvers[j]
         #observer_time = Solvers.observers.observer_timeit()
@@ -40,7 +41,10 @@ def comparesolvers(solvers,optfunc,startpoint):
         result_log = observer_step_log.get_result()
     
         plt.figure(1)
-        plt.plot([result_log[i][2] for i in range(len(result_log))],[result_log[i][0] for i in range(len(result_log))],colors[j])
+        n_eval = [result_log[i][2] for i in range(len(result_log))]
+        func_val = [result_log[i][0] for i in range(len(result_log))]
+        plots[j], = plt.plot(n_eval,func_val,colors[j],label= solvers[j].id)
+        
         plt.title(optfunc.id)
         plt.xlabel('Number of function evaluations')
         plt.ylabel('Function value')
@@ -57,6 +61,8 @@ def comparesolvers(solvers,optfunc,startpoint):
         plt.ylabel('y')
         
         optfunc.reset_n_evaluations()
+    plt.figure(1)
+    plt.legend(handles = plots)
         
     plt.show()
 
@@ -76,8 +82,8 @@ def makeallsolvers():
     termination_strategies = [t_strat_tol,t_strat_max_iter,t_strat_max_eval]
     
     simplex_solver = simplex(start_size = start_size,termination_strategies = termination_strategies)    
-    reduc_factor = 0.8
-    
+    reduc_factor = 0.5
+    start_size = 0.05
     linesearch_solver = naive_line_search(start_size = start_size, termination_strategies = termination_strategies,reduc_factor = reduc_factor)
  
     patternsearch_solver = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
@@ -230,7 +236,7 @@ def fullreport(optfunc,startpoint,solver):
         plt.ylabel('y')
         
         plt.show()
-
+        print("Pop_0: blue; Pop_end: black")
         
     
     plt.show()
