@@ -11,6 +11,8 @@ from Solvers.simplex import simplex
 from Solvers.naive_line_search import naive_line_search
 from Solvers.pattern_search import pattern_search
 from Solvers.genetic_algorithm import genetic_algorithm
+from Solvers.CMA_ES import CMA_ES
+
 
 import Solvers.observers
 import Functions.test_functions
@@ -60,9 +62,10 @@ def testall():
     
     pop_size = 10
     solver4 = genetic_algorithm(pop_size = pop_size, termination_strategies = termination_strategies)
-    fullreport_all(solver4)
-    solver4 = genetic_algorithm(pop_size = pop_size, termination_strategies = termination_strategies)
-    fullreport_all(solver4)
+    #fullreport_all(solver4)
+    
+    solver5 = CMA_ES(pop_size = pop_size, termination_strategies = termination_strategies)
+    fullreport_all(solver5)
     
     
 if __name__ == '__main__':
