@@ -75,6 +75,9 @@ class observer_step_log(observer):
         n_eval = self.solver.func.n_evaluations
         points = self.solver.bestpoint
         vals = self.solver.bestvalue
+        #points = self.solver.bestpointsofar
+        #vals = self.solver.bestvaluesofar
+        
         self.result.append([vals,points,n_eval])
     def get_result(self):
         return self.result
@@ -128,6 +131,8 @@ class observer_population_log(observer):
         self.solver = solver
     def notify_step_end(self):
         pop = self.solver.population
+        if(self.solver.population_orientation == 'COLUMN'):
+            pop = np.transpose(pop)
         vals = self.solver.population_values
         self.result.append([pop,vals])
     def get_result(self):

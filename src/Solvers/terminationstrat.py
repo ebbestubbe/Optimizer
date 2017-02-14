@@ -21,6 +21,8 @@ class termination_strategy_tolerance(object):
         if(to_checkwith > 0):
             abs_diff = solver.bestvals[to_checkwith] - solver.bestvals[-1]
             rel_diff = abs((solver.bestvals[to_checkwith] - solver.bestvals[-1])/solver.bestvals[-1])              
+            #print(abs_diff)
+            #print(rel_diff)
             abs_break = (abs_diff < self.abs_tol)
             rel_break = (rel_diff < self.rel_tol)
             

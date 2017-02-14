@@ -7,7 +7,6 @@ Created on Tue Jan 10 23:07:48 2017
 import numpy as np
 import matplotlib.pyplot as plt
 
-from Solvers.simplex import simplex
 import Solvers.observers
 import Functions.test_functions
 
@@ -15,12 +14,12 @@ from Solvers.simplex import simplex
 from Solvers.naive_line_search import naive_line_search
 from Solvers.pattern_search import pattern_search
 from Solvers.genetic_algorithm import genetic_algorithm
-
+from Solvers.CMA_ES import CMA_ES
 
 import Solvers.terminationstrat
 
 def comparesolvers(solvers,optfunc,startpoint):
-    colors = ['b','k','g','m']
+    colors = ['b','g','r','c','m','y','k']
     plots = [None]*len(solvers)
     for j in range(len(solvers)):
         solver = solvers[j]
@@ -61,6 +60,9 @@ def comparesolvers(solvers,optfunc,startpoint):
         plt.ylabel('y')
         
         optfunc.reset_n_evaluations()
+        print(solver.id + ": " + str(val))
+        print(solver.id + ": " + str(var))
+        
     plt.figure(1)
     plt.legend(handles = plots)
         
@@ -70,16 +72,17 @@ def makeallsolvers():
     rel_tol = 10e-10
     abs_tol = 10e-10
     
-    check_depth = 5
-    #rel_tol = 0
-    #abs_tol = 0
-    max_eval = 200
-    max_iter = 400
+    check_depth = 50
+    rel_tol = 0
+    abs_tol = 0
+    max_eval = 400
+    max_iter = 4000
     start_size = 0.005
-    t_strat_tol = Solvers.terminationstrat.termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
+    #t_strat_tol = Solvers.terminationstrat.termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
     t_strat_max_iter = Solvers.terminationstrat.termination_strategy_max_iter(max_iter = max_iter)
     t_strat_max_eval = Solvers.terminationstrat.termination_strategy_max_eval(max_eval = max_eval)
-    termination_strategies = [t_strat_tol,t_strat_max_iter,t_strat_max_eval]
+    #termination_strategies = [t_strat_tol,t_strat_max_iter,t_strat_max_eval]
+    termination_strategies = [t_strat_max_iter,t_strat_max_eval]
     
     simplex_solver = simplex(start_size = start_size,termination_strategies = termination_strategies)    
     reduc_factor = 0.5
@@ -91,7 +94,10 @@ def makeallsolvers():
     pop_size = 20
     ga_solver = genetic_algorithm(pop_size = pop_size,termination_strategies = termination_strategies)
     
-    solvers = [simplex_solver,linesearch_solver,patternsearch_solver,ga_solver]
+    pop_size = 6
+    CMAES_solver = CMA_ES(pop_size = pop_size, termination_strategies = termination_strategies)
+    
+    solvers = [simplex_solver,linesearch_solver,patternsearch_solver,ga_solver,CMAES_solver]
     return solvers
         
 
@@ -100,13 +106,14 @@ def fullreport_all(solver):
     optfuncs = []
     
     optfuncs.append(test_sphere())  
+    '''
     optfuncs.append(test_rosenbrock())
     optfuncs.append(test_himmelblau())
     optfuncs.append(test_rastrigin())
     optfuncs.append(test_bukin6())
     optfuncs.append(test_eggholder())
     optfuncs.append(test_cross_in_tray())
-    
+    '''
     for i in range(len(optfuncs)):
         fullreport(optfuncs[i][0],optfuncs[i][1],solver)
     return
@@ -154,8 +161,9 @@ def fullreport(optfunc,startpoint,solver):
     solver.attach(observer_time)
     solver.attach(observer_step_log)
     
+    #   if(solver.id == 'NELDER_MEAD_SIMPLEX'):
+ 
     if(hasattr(solver, 'population')):
- #   if(solver.id == 'NELDER_MEAD_SIMPLEX'):
         observer_pop = Solvers.observers.observer_population_log(solver)
         solver.attach(observer_pop)
     

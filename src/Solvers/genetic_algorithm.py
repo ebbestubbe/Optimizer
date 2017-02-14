@@ -4,6 +4,7 @@ Created on Mon Jan 16 00:11:00 2017
 
 @author: Ebbe
 """
+
 import numpy as np
 from solver import solver_interface 
 import random
@@ -13,6 +14,7 @@ class genetic_algorithm(solver_interface):
         super().__init__(termination_strategies)
         self.pop_size = pop_size
         self.population = []
+        self.population_orientation = 'ROW' #individuals are row vectors
         #self.n_select = np.floor(pop_size/2)
         self.id = "GENETIC_ALGORITHM"
         
@@ -24,11 +26,11 @@ class genetic_algorithm(solver_interface):
             child = self.create_child(self.population[parents[0]],self.population[parents[1]])
             child_val = self.func.evaluate(child)
             children.append([child,child_val])
-            #print(self.population)
+            
         for i in range(self.pop_size):
             self.insertpoint(children[i][0],children[i][1])
-            
-        self.cull_population
+        
+        self.cull_population()
         #print(self.population)
     #figure out a way to incoorporate point_start
     def solve_alg(self,func,point_start):
@@ -68,6 +70,9 @@ class genetic_algorithm(solver_interface):
     
     def cull_population(self):
         self.population = self.population[0:self.pop_size,:]
+        self.population_values = self.population_values[0:self.pop_size]
+        
+
     #generate initial random population and evaluate
     def generate_init_pop(self):
         self.population =  np.array([np.random.uniform(self.func.bounds[0],self.func.bounds[1]) for i in range(self.pop_size)])

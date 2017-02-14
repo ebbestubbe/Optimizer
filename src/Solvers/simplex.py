@@ -13,7 +13,7 @@ class simplex(solver_interface):
         self.id = "NELDER_MEAD_SIMPLEX"
         self.start_size = start_size        
         self.population = []
-
+        self.population_orientation = 'ROW' #individuals are row vectors
         #set simplex parameter values        
         self.alpha = 1        
         self.gamma = 2
