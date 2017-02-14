@@ -57,7 +57,7 @@ def testall():
     check_depth = 20
     rel_tol = 0
     abs_tol = 0
-    max_eval = 3000
+    max_eval = 5000
     max_iter = 1000
     start_size = 0.05
     t_strat_tol = termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
@@ -75,9 +75,10 @@ def testall():
     solver3 = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
     #fullreport_all(solver3)
     
-    pop_size = 10
+    pop_size = 20
     solver4 = genetic_algorithm(pop_size = pop_size, termination_strategies = termination_strategies)
     #fullreport_all(solver4)
+    pop_size = 6
     
     solver5 = CMA_ES(pop_size = pop_size, termination_strategies = termination_strategies)
     fullreport_all(solver5)

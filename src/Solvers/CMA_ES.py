@@ -75,6 +75,7 @@ class CMA_ES(solver_interface):
             #print(break_bools)            
             if(any(break_bools)):
                 break
+        print(self.population)
         return (self.bestvaluesofar,self.bestpointsofar)
        
     def init_var(self):

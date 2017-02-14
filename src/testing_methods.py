@@ -105,9 +105,9 @@ def makeallsolvers():
 def fullreport_all(solver): 
     optfuncs = []
     
-    optfuncs.append(test_sphere())  
-    '''
+    #optfuncs.append(test_sphere())  
     optfuncs.append(test_rosenbrock())
+    '''
     optfuncs.append(test_himmelblau())
     optfuncs.append(test_rastrigin())
     optfuncs.append(test_bukin6())
