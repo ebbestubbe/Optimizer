@@ -38,13 +38,16 @@ def main():
     
     print(withinlower.all() and withinupper.all())
     '''
-    testall()
-    #comp()
+    #testall()
+    comp()
     
 def comp():
     solvers = testing_methods.makeallsolvers()
-    optfunc = Functions.test_functions.himmelblau()
+    optfunc = Functions.test_functions.sphere(100)
     start_point = np.array([-1,1])
+    
+    start_point = np.random.uniform(-10,10,100)
+    start_point = np.array([8]*100)
     testing_methods.comparesolvers(solvers,optfunc,start_point)
 
 def testall():
@@ -54,11 +57,9 @@ def testall():
     abs_tol = 10e-10
     
     
-    check_depth = 20
-    rel_tol = 0
-    abs_tol = 0
-    max_eval = 5000
-    max_iter = 1000
+    check_depth = 10
+    max_eval = 2000
+    max_iter = 10000
     start_size = 0.05
     t_strat_tol = termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
     t_strat_max_iter = termination_strategy_max_iter(max_iter = max_iter)
@@ -81,7 +82,7 @@ def testall():
     pop_size = 6
     
     solver5 = CMA_ES(pop_size = pop_size, termination_strategies = termination_strategies)
-    fullreport_all(solver5)
+    #fullreport_all(solver5)
     
     
 if __name__ == '__main__':

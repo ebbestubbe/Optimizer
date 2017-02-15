@@ -31,6 +31,8 @@ class genetic_algorithm(solver_interface):
             self.insertpoint(children[i][0],children[i][1])
         
         self.cull_population()
+        self.bestpoints.append(self.population[0])
+        self.bestvalues.append(self.population_values[0])
         #print(self.population)
     #figure out a way to incoorporate point_start
     def solve_alg(self,func,point_start):
@@ -38,11 +40,9 @@ class genetic_algorithm(solver_interface):
         self.generate_init_pop()
         
         self.it = 0
-        self.bestvals = [self.bestvalue]
         #keep going until a termination strategy tells the solver to fuck off
         while(True):
             self.step()
-            self.bestvals.append(self.bestvalue)
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
             #print(break_bools)            
             if(any(break_bools)):
@@ -50,7 +50,7 @@ class genetic_algorithm(solver_interface):
             
             self.it+=1
         
-        return(self.population_values[0],self.population[0,:])
+        return(self.bestvalues[-1],self.bestpoints[-1])
     
     def create_child(self,v1,v2):
         mask = np.random.randint(2,size = self.func.n_dim)
@@ -78,18 +78,19 @@ class genetic_algorithm(solver_interface):
         self.population =  np.array([np.random.uniform(self.func.bounds[0],self.func.bounds[1]) for i in range(self.pop_size)])
         #print(self.population)
         self.sortpopulation()
+        self.bestpoints = [self.population[0]]
+        self.bestvalues = [self.population_values[0]]
        
     def sortpopulation(self):   
         self.population_values = np.array([self.func.evaluate(self.population[i]) for i in range(len(self.population))])
         a = self.population_values.argsort()        
         self.population_values = self.population_values[a]
         self.population = self.population[a]
-        self.setbest()
     
     #Method to insert a point into the self.population and self.population_values, such that the list remains sorted
     #Saves computation time, as all points do not have to be re-evaluated
     def insertpoint(self,point,value):
-        #Remove the worst point ( for simplex, for GA: just insert, such that the list grows)
+        #Remove the worst point ( for simplex, for GA: just insert, such that the list grows and is later culled)
         #self.population = self.population[0:-1,:]
         #self.population_values = self.population_values[0:-1]
         
@@ -98,9 +99,4 @@ class genetic_algorithm(solver_interface):
         #Insert the point and value at the sorted position        
         self.population_values = np.insert(self.population_values,insert_ind,value)
         self.population = np.insert(self.population,insert_ind,point,axis=0)
-        self.setbest()
         
-    #Keep track of the best point in a seperate variable, for ease of observers and result handling:
-    def setbest(self):
-        self.bestpoint = self.population[0,:]
-        self.bestvalue = self.population_values[0]

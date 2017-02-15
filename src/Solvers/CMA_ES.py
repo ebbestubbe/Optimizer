@@ -52,9 +52,11 @@ class CMA_ES(solver_interface):
         self.population_values = np.zeros(self._lambda)
         
         self.it = 0
-        self.bestvals = []
-        self.bestpointsofar = None
-        self.bestvaluesofar = np.inf        
+        #bestpoints are oriented such that rows correspond to individuals in series of bestpoints
+        #for initialization, use the starting point as the 'first' individual, even though this is strictly not in the population
+        #This is done to avoid comparing to an empty list in the first generation
+        self.bestpoints = [point_start]        
+        self.bestvalues = [self.func.evaluate(point_start)]
 
         while(True):
             self.it += 1
@@ -76,7 +78,7 @@ class CMA_ES(solver_interface):
             if(any(break_bools)):
                 break
         print(self.population)
-        return (self.bestvaluesofar,self.bestpointsofar)
+        return (self.bestvalues[-1],self.bestpoints[-1])
        
     def init_var(self):
         #SELECTION: lambda is initialized in __init__()
@@ -127,8 +129,13 @@ class CMA_ES(solver_interface):
                     badcandidate = False
                     self.population[:,i] = candidate
         self.sortpopulation()
-        self.setbest()
-        self.bestvals.append(self.bestvalue)
+        if(self.population_values[0] < self.bestvalues[-1]):
+            self.bestpoints.append(np.transpose(self.population[:,0]))
+            self.bestvalues.append(self.population_values[0])
+        else:
+            self.bestpoints.append(self.bestpoints[-1])
+            self.bestvalues.append(self.bestvalues[-1])
+            
         
     def update_evolution_paths(self):
         
@@ -169,15 +176,7 @@ class CMA_ES(solver_interface):
         #transposing back
         self.population = np.transpose(self.population)
 
-        self.setbest()
 
-    #Keep track of the best point in a seperate variable, for ease of observers and result handling:
-    def setbest(self):
-        self.bestpoint = self.population[:,0]
-        self.bestvalue = self.population_values[0]
-        if(self.bestvalue < self.bestvaluesofar):
-            self.bestvaluesofar = self.bestvalue
-            self.bestpointsofar = self.bestpoint
     #Method to insert a point into the self.population and self.population_values, such that the list remains sorted
     #Saves computation time, as all points do not have to be re-evaluated
     #def insertpoint(self,point,value):

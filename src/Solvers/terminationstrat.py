@@ -19,8 +19,8 @@ class termination_strategy_tolerance(object):
     def check_termination(self,solver):
         to_checkwith = solver.it - solver.func.n_dim*self.check_depth #when checking convergence
         if(to_checkwith > 0):
-            abs_diff = solver.bestvals[to_checkwith] - solver.bestvals[-1]
-            rel_diff = abs((solver.bestvals[to_checkwith] - solver.bestvals[-1])/solver.bestvals[-1])              
+            abs_diff = solver.bestvalues[to_checkwith] - solver.bestvalues[-1]
+            rel_diff = abs((solver.bestvalues[to_checkwith] - solver.bestvalues[-1])/solver.bestvalues[-1])              
             #print(abs_diff)
             #print(rel_diff)
             abs_break = (abs_diff < self.abs_tol)

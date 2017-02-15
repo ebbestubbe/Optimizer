@@ -79,12 +79,14 @@ class simplex(solver_interface):
 
         self.sortpopulation()
         self.it = 0
-        self.bestvals = [self.population_values[0]]
+        self.bestvalues = [self.population_values[0]]
+        self.bestpoints = [self.population[0]]
         #keep going until a termination strategy tells the solver to fuck off
         while(True):
             
             self.step()
-            self.bestvals.append(self.population_values[0])
+            self.bestvalues.append(self.population_values[0])
+            self.bestpoints.append(self.population[0])
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
             #print(break_bools)            
             if(any(break_bools)):
@@ -92,7 +94,7 @@ class simplex(solver_interface):
             
             self.it+=1
         
-        return(self.population_values[0],self.population[0,:])
+        return(self.bestvalues[-1],self.bestpoints[-1])
     
     #Sort points and values such that the lowest values come first.    
     #Should only be called when all points are to be evaluated(init and shrinking)
@@ -101,7 +103,6 @@ class simplex(solver_interface):
         a = self.population_values.argsort()        
         self.population_values = self.population_values[a]
         self.population = self.population[a]
-        self.setbest()
         
     #Explicitly only used for the simplex:
     #Method to insert a point into the self.population and self.population_values, such that the list remains sorted
@@ -115,9 +116,5 @@ class simplex(solver_interface):
         #Insert the point and value at the sorted position        
         self.population_values = np.insert(self.population_values,insert_ind,value)
         self.population = np.insert(self.population,insert_ind,point,axis=0)
-        self.setbest()
         
-#Keep track of the best point in a seperate variable, for ease of observers and result handling:
-    def setbest(self):
-        self.bestpoint = self.population[0,:]
-        self.bestvalue = self.population_values[0]
+        
