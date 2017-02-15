@@ -1,0 +1,30 @@
+General concern
+	GA's start at ~ 2*pop size with the first value
+	
+	Running naive line search on 100D sphere gives funcval of 10-110:
+		'''
+		optfunc = Functions.test_functions.sphere(100)
+		start_point = np.random.uniform(-10,10,100)
+		'''
+		Maybe something accidentally sets all variables to 0?
+
+	CMAES stops at high dimensional problems with high values:
+
+		optfunc = Functions.test_functions.sphere(100)
+		start_point = np.array([8]*100)
+		C:\Users\Ebbe\Documents\GitHub\Optimizer\src\Solvers\CMA_ES.py:130: ComplexWarning: Casting complex values to real discards the imaginary part
+		self.population[:,i] = candidate
+
+		
+quality of life improvements
+	log scale
+	
+	testing all solvers on all functions
+	
+	testing functions in run_tests/testing_methods dissonance
+
+
+Down the line
+	fancy GA's
+	CUDA/gfx card
+	images with ARGB

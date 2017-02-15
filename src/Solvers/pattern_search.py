@@ -25,10 +25,10 @@ class pattern_search(solver_interface):
             point_mod = np.zeros(self.func.n_dim)
             point_mod[i] = self.step_size
             
-            point_neg = np.clip(self.bestpoint - point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_neg = np.clip(self.bestpoints[-1] - point_mod, self.func.bounds[0], self.func.bounds[1])
             value_neg = self.func.evaluate(point_neg)
             
-            point_pos = np.clip(self.bestpoint + point_mod, self.func.bounds[0], self.func.bounds[1])
+            point_pos = np.clip(self.bestpoints[-1] + point_mod, self.func.bounds[0], self.func.bounds[1])
             value_pos = self.func.evaluate(point_pos)
             
             point_candidates.append([point_neg, point_pos])
@@ -44,24 +44,28 @@ class pattern_search(solver_interface):
         min_coords = [min_dimension,min_direction[min_dimension]]
         
         val_lowest = value_candidates[min_coords[0]][min_coords[1]]
-        if(val_lowest < self.bestvalue):
-            self.bestvalue = val_lowest
-            self.bestpoint = point_candidates[min_coords[0]][min_coords[1]]
+        if(val_lowest < self.bestvalues[-1]):
+            value_to_append = val_lowest
+            point_to_append = point_candidates[min_coords[0]][min_coords[1]]
+        else:
+            value_to_append = self.bestvalues[-1]
+            point_to_append = self.bestpoints[-1]
+        self.bestvalues.append(value_to_append)
+        self.bestpoints.append(point_to_append)
         
     def solve_alg(self, func, point_start):
         self.func = func
-        self.bestpoint = point_start
-        self.bestvalue = self.func.evaluate(self.bestpoint)
         self.step_size = self.start_size
         
         self.it = 0
-        self.bestvals = [self.bestvalue]
+        self.bestpoints = [point_start]
+        self.bestvalues = [self.func.evaluate(point_start)]
+        
         while(True):
             self.step()
-            self.bestvals.append(self.bestvalue)
             
             #If there was no improvement: reduce the stepping size:
-            if(self.bestvals[-2] <= self.bestvalue):
+            if(self.bestvalues[-2] <= self.bestvalues[-1]):
                 self.step_size*= self.reduc_factor
             
             break_bools = [i.check_termination(solver=self) for i in self.termination_strategies]
@@ -70,4 +74,4 @@ class pattern_search(solver_interface):
             
             self.it+=1   
             
-        return([self.bestvalue,self.bestpoint])
+        return([self.bestvalues[-1],self.bestpoints[-1]])

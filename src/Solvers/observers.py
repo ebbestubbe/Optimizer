@@ -73,8 +73,11 @@ class observer_step_log(observer):
         self.solver = solver
     def notify_step_end(self):
         n_eval = self.solver.func.n_evaluations
-        points = self.solver.bestpoint
-        vals = self.solver.bestvalue
+        points = self.solver.bestpoints[-1]
+        vals = self.solver.bestvalues[-1]
+        #points = self.solver.bestpointsofar
+        #vals = self.solver.bestvaluesofar
+        
         self.result.append([vals,points,n_eval])
     def get_result(self):
         return self.result
@@ -121,13 +124,15 @@ class observer_step_print(observer):
             print(outputstring)
             
 #The results are given in a the data format [step iteration][points//vals][simplex corner]
-#so [results[i][1][0] for i in range(len(results))] gives the best value in each iteration        
+#so [results[i][1][0] for i in range(len(results))] gives the best value in each generation      
 class observer_population_log(observer):    
     def __init__(self,solver):    
         self.result = []
         self.solver = solver
     def notify_step_end(self):
         pop = self.solver.population
+        if(self.solver.population_orientation == 'COLUMN'):
+            pop = np.transpose(pop)
         vals = self.solver.population_values
         self.result.append([pop,vals])
     def get_result(self):
