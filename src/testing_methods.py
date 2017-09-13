@@ -43,6 +43,7 @@ def comparesolvers(solvers,optfunc,startpoint):
         plt.figure(1)
         n_eval = [result_log[i][2] for i in range(len(result_log))]
         func_val = [result_log[i][0] for i in range(len(result_log))]
+        
         #plots[j], = plt.plot(n_eval,func_val,colors[j],label= solvers[j].id)
         plots[j], = plt.plot(n_eval,np.log10(func_val),colors[j],label= solvers[j].id)
         
@@ -94,10 +95,10 @@ def makeallsolvers():
  
     patternsearch_solver = pattern_search(start_size = start_size,termination_strategies = termination_strategies,reduc_factor = reduc_factor)    
     
-    pop_size = 50
+    pop_size = 500
     ga_solver = genetic_algorithm(pop_size = pop_size,termination_strategies = termination_strategies)
     
-    pop_size = 6
+    pop_size = 70
     CMAES_solver = CMA_ES(pop_size = pop_size, termination_strategies = termination_strategies)
     
     solvers = [simplex_solver,linesearch_solver,patternsearch_solver,ga_solver,CMAES_solver]

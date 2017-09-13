@@ -36,7 +36,6 @@ class CMA_ES(solver_interface):
         #decompose C into B*diag(D^2)*B'
         if(self.it - self._eigeneval  > self._lambda/(10*self.func.n_dim*(self._c_1+self._c_mu))):
             self.decompose_C()
-
     #figure out a way to incoorporate point_start
     def solve_alg(self,func,point_start):
         self.func = func
@@ -44,7 +43,9 @@ class CMA_ES(solver_interface):
         self._xmean = point_start 
         
         #user defined: figure out a way to incorporate _sigma in a good way. Maybe common interface for local, and one for global?
-        self._sigma = 0.5
+        #self._sigma = 0.5
+        self._sigma = 50
+        
         
         self.init_var()
         
@@ -77,7 +78,6 @@ class CMA_ES(solver_interface):
             #print(break_bools)            
             if(any(break_bools)):
                 break
-        print(self.population)
         return (self.bestvalues[-1],self.bestpoints[-1])
        
     def init_var(self):
@@ -117,6 +117,8 @@ class CMA_ES(solver_interface):
         
     def generate_offspring(self):
         for i in range(self._lambda):
+            '''
+            #sample points within the borders(could result in a near-endless loop)
             badcandidate = True
             while(badcandidate):
                 
@@ -128,6 +130,15 @@ class CMA_ES(solver_interface):
                 if(withinlower.all() and withinupper.all()):
                     badcandidate = False
                     self.population[:,i] = candidate
+            '''
+            #sample points and then clip them to the boundaries, guarantees staying within the bounds
+            randpart = np.random.normal(size = self._D.shape)
+            candidate = self._xmean + self._sigma * self._B.dot(self._D*randpart)
+            #print("Shapes:")
+            #print(candidate)
+            
+            candidate = np.clip(candidate,self.func.bounds[0],self.func.bounds[1])
+            self.population[:,i] = candidate
         self.sortpopulation()
         if(self.population_values[0] < self.bestvalues[-1]):
             self.bestpoints.append(np.transpose(self.population[:,0]))

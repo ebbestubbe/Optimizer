@@ -29,9 +29,22 @@ def add_triangles(img,vec):
         color = vec[ind+6:ind+9]
         rr,cc = draw.polygon(r,c)
         img[rr,cc] = color
+           
+def add_triangles_additive_bw(img,vec):
+    for i in range(len(vec)//7):
+        ind = i*7
+        r = vec[ind+0:ind+3]
+        c = vec[ind+3:ind+6]
+        color = vec[ind+6]
+        rr,cc = draw.polygon(r,c)
+        #img[rr,cc] += color
+        img[rr,cc] = np.minimum(1.0,img[rr,cc] + color/255)
+        
+           
 #initializ a white rgb image with the same dimensions  
 def trial_init(img_target):
-    trial = np.zeros(img_target.shape,dtype=np.uint8)-1
+    #trial = np.zeros(img_target.shape,dtype=np.uint8)-1
+    trial = np.zeros(img_target.shape,dtype=np.float64)
     return trial
     
 #returns r,c,color of a random triangle, respecting bounds in the image and in 8-bit triplet colors
@@ -53,6 +66,17 @@ def calc_cost(target,trial):
     cost_b = np.power(difference[:,:,2],2)
     
     cost = cost_r + cost_g + cost_b
+    
+    costsum = np.sum(cost)
+    return costsum
+#returns the sum of the euclidian color distance
+def calc_cost_bw(target,trial):
+    #target_64 = target.astype(np.int64)
+    #trial_64 = trial.astype(np.int64)
+        
+    difference = target-trial
+        
+    cost = np.power(difference,2)
     
     costsum = np.sum(cost)
     return costsum

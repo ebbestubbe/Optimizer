@@ -43,11 +43,12 @@ def main():
     
 def comp():
     solvers = testing_methods.makeallsolvers()
-    optfunc = Functions.test_functions.sphere(100)
+    ndim = 5
+    optfunc = Functions.test_functions.sphere(ndim)
     start_point = np.array([-1,1])
     
-    start_point = np.random.uniform(-10,10,100)
-    start_point = np.array([8]*100)
+    start_point = np.random.uniform(-10,10,ndim)
+    start_point = np.array([8]*ndim)
     testing_methods.comparesolvers(solvers,optfunc,start_point)
 
 def testall():
@@ -58,8 +59,8 @@ def testall():
     
     
     check_depth = 10
-    max_eval = 2000
-    max_iter = 10000
+    max_eval = 100
+    max_iter = 100
     start_size = 0.05
     t_strat_tol = termination_strategy_tolerance(rel_tol = rel_tol, abs_tol = abs_tol, check_depth = check_depth)
     t_strat_max_iter = termination_strategy_max_iter(max_iter = max_iter)
